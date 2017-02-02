@@ -11,32 +11,30 @@ namespace FilmInfo.Model
 {
     public class FilmRepository
     {
-        public Dictionary<string, Movie> FilmDatabase;
-        private DirectoryInfo directoryInfo;
+        public List<Movie> FilmDatabase { get; set; }
+        public string RootDirectory { get; private set;}
 
         public FilmRepository()
         {
-            FilmDatabase = new Dictionary<string, Movie>();
-
-            AddDummys();
+            FilmDatabase = new List<Movie>();
         }
 
-        public List<Movie> GetAllMovies(string rootDirectory)
+        public bool ScanAllMovies(string rootDirectory)
         {
-            directoryInfo = new DirectoryInfo(rootDirectory);
-            var directorys = directoryInfo.EnumerateDirectories();
-            var list = new List<Movie>();
+            FilmDatabase.Clear();
+            RootDirectory = rootDirectory;
+            var directorys = new DirectoryInfo(rootDirectory).EnumerateDirectories();
 
             foreach (var directory in directorys)
             {
                 var movie = SetFilesInMovie(directory);
                 movie = SetFieldsInMovie(directory, movie);
-                list.Add(movie);
+                FilmDatabase.Add(movie);
             }
-            list.RemoveAll(m => m.MkvFile == null);
-            list = list.OrderBy(m => m.Name).ToList();
-
-            return list;
+            FilmDatabase.RemoveAll(m => m.MkvFile == null);
+            
+            if (FilmDatabase.Count != 0) return true;
+            else return false;
         }
 
         private Movie SetFilesInMovie(DirectoryInfo directory)
@@ -66,8 +64,6 @@ namespace FilmInfo.Model
                 movie.PosterFile = "NoImage.jpg";
                 movie.PosterFileFull = @"\Resources\Images\NoImage.jpg";
             }
-
-
             return movie;
         }
 
@@ -80,13 +76,6 @@ namespace FilmInfo.Model
                 movie.Year = int.Parse(Year.Remove(0, 1).Remove(4, 1));
 
             return movie;
-        }
-
-        private void AddDummys()
-        {
-            FilmDatabase.Add("Terminator 3", new Movie() { Name = "Terminator 3", Year = 2001 });
-            FilmDatabase.Add("Snatch", new Movie() { Name = "Snatch", Year = 1998 });
-            FilmDatabase.Add("Suicide Squad", new Movie() { Name = "Suicide Squad", Year = 2016 });
         }
     }
 }

@@ -13,7 +13,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Header="choose Folder..." Command="{Binding OpenDirCommand}"/>
+                <MenuItem Header="scan folder..." Command="{Binding ScanDirectoryCommand}"/>
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom" Height="15"/>

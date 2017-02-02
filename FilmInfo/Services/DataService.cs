@@ -12,7 +12,6 @@ namespace FilmInfo.Services
         private FilmRepository filmRepository;
         private FileOperations fileOperations;
 
-        public string RootDirectory { private set; get; }
 
         public DataService()
         {
@@ -20,14 +19,15 @@ namespace FilmInfo.Services
             fileOperations = new FileOperations();
         }
 
-        public void SetRootDirectory()
-        {
-            RootDirectory = fileOperations.GetRootDirectory();
-        }
-
         public List<Movie> GetAllMovies()
         {
-            return filmRepository.GetAllMovies(RootDirectory);
+            return filmRepository.FilmDatabase;
+        }
+
+        public bool ScanAllMovies()
+        {
+            var rootDirectory = fileOperations.GetRootDirectory();
+            return filmRepository.ScanAllMovies(rootDirectory);
         }
     }
 }

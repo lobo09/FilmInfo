@@ -15,9 +15,10 @@ namespace FilmInfo.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private DataService dataService;
-        public CustomCommand OpenDirCommand { get; set; }
+        public CustomCommand ScanDirectoryCommand { get; set; }
         public CustomCommand SortCommand { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private DataService dataService;
 
 
         private Movie selectedMovie;
@@ -56,14 +57,14 @@ namespace FilmInfo.ViewModels
 
         private void LoadCommands()
         {
-            OpenDirCommand = new CustomCommand(OpenDir);
+            ScanDirectoryCommand = new CustomCommand(ScanDirectory);
             SortCommand = new CustomCommand(SortMovies);
         }
 
-        private void OpenDir(object obj)
+        private void ScanDirectory(object obj)
         {
-            dataService.SetRootDirectory();
-            if (dataService.RootDirectory != null) MovieNamesUpdate();
+            dataService.ScanAllMovies();
+            Movies = dataService.GetAllMovies().ToObservableCollection();
         }
 
         private void SortMovies(object obj)
@@ -84,12 +85,7 @@ namespace FilmInfo.ViewModels
             }
         }
 
-        private void MovieNamesUpdate()
-        {
-            Movies = dataService.GetAllMovies().ToObservableCollection();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        
 
         private void RaisePropertyChanged(string propertyName)
         {
