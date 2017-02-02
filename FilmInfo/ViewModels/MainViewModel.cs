@@ -70,22 +70,10 @@ namespace FilmInfo.ViewModels
         private void SortMovies(object obj)
         {
             string sortType = obj as string;
-
-            if (sortType == "name")
-            {
-                MessageBox.Show("Name");
-            }
-            else if (sortType == "date")
-            {
-                MessageBox.Show("Datum");
-            }
-            else if (sortType == "newest")
-            {
-                MessageBox.Show("Neueste");
-            }
+            Movies = dataService.SortMovies(sortType).ToObservableCollection();
         }
 
-        
+
 
         private void RaisePropertyChanged(string propertyName)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,6 +36,20 @@ namespace FilmInfo.Model
             
             if (FilmDatabase.Count != 0) return true;
             else return false;
+        }
+
+        internal List<Movie> SortMovies(string sortType)
+        {
+            if (sortType == "name")
+                FilmDatabase = FilmDatabase.OrderBy(m => m.Name).ToList();
+
+            if (sortType == "year")
+                FilmDatabase = FilmDatabase.OrderByDescending(m => m.Year).ToList();
+
+            if (sortType == "newest")
+                FilmDatabase = FilmDatabase;
+
+            return FilmDatabase;
         }
 
         private Movie SetFilesInMovie(DirectoryInfo directory)

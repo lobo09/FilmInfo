@@ -28,7 +28,7 @@
                 <Label Content="Sortierung:" Margin="2,0,0,0"/>
                 <StackPanel Margin="10,0,0,0">
                     <RadioButton Content="Name" GroupName="SortGroup" Command="{Binding SortCommand}" CommandParameter="name"/>
-                    <RadioButton Content="Datum" GroupName="SortGroup" Command="{Binding SortCommand}" CommandParameter="date"/>
+                    <RadioButton Content="Datum" GroupName="SortGroup" Command="{Binding SortCommand}" CommandParameter="year"/>
                     <RadioButton Content="Neueste" GroupName="SortGroup" Command="{Binding SortCommand}" CommandParameter="newest"/>
                 </StackPanel>
             </StackPanel>

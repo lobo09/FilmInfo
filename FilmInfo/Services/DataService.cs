@@ -29,5 +29,10 @@ namespace FilmInfo.Services
             var rootDirectory = fileOperations.GetRootDirectory();
             return filmRepository.ScanAllMovies(rootDirectory);
         }
+
+        public List<Movie> SortMovies(string sortType)
+        {
+            return filmRepository.SortMovies(sortType);
+        }
     }
 }
