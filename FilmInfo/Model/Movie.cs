@@ -11,11 +11,12 @@ namespace FilmInfo.Model
     {
         public string Name { get; set; }
         public int Year { get; set; }
+        public DateTime MkvCreationTime { get; set; }
         public string MkvFile { get; set; }
-        public string NfoFile { get; set; }
-        public string PosterFile { get; set; }
         public string MkvFileFull { get; set; }
+        public string NfoFile { get; set; }
         public string NfoFileFull { get; set; }
+        public string PosterFile { get; set; }
         public string PosterFileFull { get; set; }
     }
 }

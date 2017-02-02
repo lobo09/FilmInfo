@@ -47,7 +47,7 @@ namespace FilmInfo.Model
                 FilmDatabase = FilmDatabase.OrderByDescending(m => m.Year).ToList();
 
             if (sortType == "newest")
-                FilmDatabase = FilmDatabase;
+                FilmDatabase = FilmDatabase.OrderByDescending(m => m.MkvCreationTime).ToList();
 
             return FilmDatabase;
         }
@@ -89,6 +89,8 @@ namespace FilmInfo.Model
             string Year = Regex.Match(directory.Name, @"\(\d{4}\)").Value;
             if (Year.Count() == 6)
                 movie.Year = int.Parse(Year.Remove(0, 1).Remove(4, 1));
+
+            if(movie.MkvFile != null) movie.MkvCreationTime = File.GetCreationTime(movie.MkvFileFull);
 
             return movie;
         }

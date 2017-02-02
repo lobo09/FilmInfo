@@ -16,7 +16,9 @@
                 <MenuItem Header="scan folder..." Command="{Binding ScanDirectoryCommand}"/>
             </MenuItem>
         </Menu>
-        <StatusBar DockPanel.Dock="Bottom" Height="15"/>
+        <StatusBar DockPanel.Dock="Bottom" >
+            <Slider Name="uiScaleSlider" Width="150" Minimum="0.2" Maximum="2" Value="1" />
+        </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
@@ -42,7 +44,10 @@
                 <ListBox Grid.Row="1" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Movies}" SelectedItem="{Binding SelectedMovie}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="350" Width="250">
+                            <Grid Height="525" Width="375">
+                                <Grid.LayoutTransform>
+                                    <ScaleTransform CenterX="0" CenterY="0" ScaleX="{Binding ElementName=uiScaleSlider, Path=Value}" ScaleY="{Binding ElementName=uiScaleSlider, Path=Value}"/>
+                                </Grid.LayoutTransform>
                                 <Grid.Effect>
                                     <DropShadowEffect Color="Gray" BlurRadius="14" ShadowDepth="10" Direction="225" />
                                 </Grid.Effect>
