@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace FilmInfo.Model
     public class FilmRepository
     {
         public List<Movie> FilmDatabase { get; set; }
-        public string RootDirectory { get; private set;}
+        public string RootDirectory { get; private set; }
 
         public FilmRepository()
         {
@@ -33,23 +34,52 @@ namespace FilmInfo.Model
                 FilmDatabase.Add(movie);
             }
             FilmDatabase.RemoveAll(m => m.MkvFile == null);
-            
+
             if (FilmDatabase.Count != 0) return true;
             else return false;
         }
 
-        internal List<Movie> SortMovies(string sortType)
+        public List<Movie> GetProcessedMovies(string sortType, string filter)
         {
-            if (sortType == "name")
-                FilmDatabase = FilmDatabase.OrderBy(m => m.Name).ToList();
+            var processedMovieList = FilmDatabase;
 
-            if (sortType == "year")
-                FilmDatabase = FilmDatabase.OrderByDescending(m => m.Year).ToList();
+            if (!string.IsNullOrEmpty(filter))
+            {
+                processedMovieList = FilterMovies(processedMovieList, filter);
+            }
 
-            if (sortType == "newest")
-                FilmDatabase = FilmDatabase.OrderByDescending(m => m.MkvCreationTime).ToList();
+            if (!string.IsNullOrEmpty(sortType))
+            {
+                processedMovieList = SortMovies(processedMovieList, sortType);
+            }
+            return processedMovieList;
+        }
 
-            return FilmDatabase;
+        private List<Movie> FilterMovies(List<Movie> movieList, string filter)
+        {
+            if (!string.IsNullOrEmpty(filter))
+                movieList = movieList.Where(m => m.Name.ToLower().Contains(filter.ToLower())).ToList();
+
+            return movieList;
+        }
+
+       private List<Movie> SortMovies(List<Movie> movieList,string sortType)
+        {
+            switch (sortType)
+            {
+                case "name":
+                    movieList = movieList.OrderBy(m => m.Name).ToList();
+                    break;
+
+                case "year":
+                    movieList = movieList.OrderByDescending(m => m.Year).ToList();
+                    break;
+
+                case "newest":
+                    movieList = movieList.OrderByDescending(m => m.MkvCreationTime).ToList();
+                    break;
+            }
+            return movieList;
         }
 
         private Movie SetFilesInMovie(DirectoryInfo directory)
@@ -57,21 +87,21 @@ namespace FilmInfo.Model
             var movie = new Movie();
             List<FileInfo> files = new List<FileInfo>(directory.EnumerateFiles().ToList());
 
-            if (files.Any(f => f.Name.Contains(".mkv")))
+            if (files.Any(f => f.Name.ToLower().Contains(".mkv")))
             {
-                movie.MkvFile = files.Where(f => f.Name.Contains(".mkv")).First().Name;
+                movie.MkvFile = files.Where(f => f.Name.ToLower().Contains(".mkv")).First().Name;
                 movie.MkvFileFull = $@"{directory.FullName}\{movie.MkvFile}";
             }
 
-            if (files.Any(f => f.Name.Contains(".nfo")))
+            if (files.Any(f => f.Name.ToLower().Contains(".nfo")))
             {
-                movie.NfoFile = files.Where(f => f.Name.Contains(".nfo")).First().Name;
+                movie.NfoFile = files.Where(f => f.Name.ToLower().Contains(".nfo")).First().Name;
                 movie.NfoFileFull = $@"{directory.FullName}\{movie.NfoFile}";
             }
 
-            if (files.Any(f => f.Name.Contains("poster.jpg") || f.Name.Contains("folder.jpg")))
+            if (files.Any(f => f.Name.ToLower().Contains("poster.jpg") || f.Name.ToLower().Contains("folder.jpg")))
             {
-                movie.PosterFile = files.Where(f => f.Name.Contains("poster.jpg") || f.Name.Contains("folder.jpg")).First().Name;
+                movie.PosterFile = files.Where(f => f.Name.ToLower().Contains("poster.jpg") || f.Name.ToLower().Contains("folder.jpg")).First().Name;
                 movie.PosterFileFull = $@"{directory.FullName}\{movie.PosterFile}";
             }
             else
@@ -90,7 +120,7 @@ namespace FilmInfo.Model
             if (Year.Count() == 6)
                 movie.Year = int.Parse(Year.Remove(0, 1).Remove(4, 1));
 
-            if(movie.MkvFile != null) movie.MkvCreationTime = File.GetCreationTime(movie.MkvFileFull);
+            if (movie.MkvFile != null) movie.MkvCreationTime = File.GetCreationTime(movie.MkvFileFull);
 
             return movie;
         }

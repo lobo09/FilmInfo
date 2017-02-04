@@ -16,7 +16,6 @@ namespace FilmInfo.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         public CustomCommand ScanDirectoryCommand { get; set; }
-        public CustomCommand SortCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         private DataService dataService;
 
@@ -49,6 +48,31 @@ namespace FilmInfo.ViewModels
             }
         }
 
+        private string filter;
+        public string Filter
+        {
+            get { return filter; }
+            set
+            {
+                filter = value;
+                RaisePropertyChanged("Filter");
+                RefreshMovieList();
+            }
+        }
+
+        private string sortOption;
+        public string SortOption
+        {
+            get { return sortOption; }
+            set
+            {
+                sortOption = value;
+                RaisePropertyChanged("SortOption");
+                RefreshMovieList();
+            }
+        }
+
+
         public MainViewModel()
         {
             LoadCommands();
@@ -58,19 +82,17 @@ namespace FilmInfo.ViewModels
         private void LoadCommands()
         {
             ScanDirectoryCommand = new CustomCommand(ScanDirectory);
-            SortCommand = new CustomCommand(SortMovies);
         }
 
         private void ScanDirectory(object obj)
         {
             dataService.ScanAllMovies();
-            Movies = dataService.GetAllMovies().ToObservableCollection();
+            Movies = dataService.GetAllMovies();
         }
 
-        private void SortMovies(object obj)
+        private void RefreshMovieList()
         {
-            string sortType = obj as string;
-            Movies = dataService.SortMovies(sortType).ToObservableCollection();
+            Movies = dataService.GetProcessedMovies(SortOption, Filter);
         }
 
 

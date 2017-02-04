@@ -1,6 +1,8 @@
 ﻿using FilmInfo.Model;
+using FilmInfo.Utility;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +21,9 @@ namespace FilmInfo.Services
             fileOperations = new FileOperations();
         }
 
-        public List<Movie> GetAllMovies()
+        public ObservableCollection<Movie> GetAllMovies()
         {
-            return filmRepository.FilmDatabase;
+            return filmRepository.FilmDatabase.ToObservableCollection();
         }
 
         public bool ScanAllMovies()
@@ -30,9 +32,9 @@ namespace FilmInfo.Services
             return filmRepository.ScanAllMovies(rootDirectory);
         }
 
-        public List<Movie> SortMovies(string sortType)
+        public ObservableCollection<Movie> GetProcessedMovies(string sortType, string filter)
         {
-            return filmRepository.SortMovies(sortType);
+            return filmRepository.GetProcessedMovies(sortType, filter).ToObservableCollection();
         }
     }
 }

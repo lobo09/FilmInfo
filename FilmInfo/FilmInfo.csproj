@@ -101,6 +101,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converter\SortOptionToBoolConverter.cs" />
     <Compile Include="Model\FileOperations.cs" />
     <Compile Include="Model\Movie.cs" />
     <Compile Include="Model\FilmRepository.cs" />
@@ -133,6 +134,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\FilmInfo.ViewModels.MainViewModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
