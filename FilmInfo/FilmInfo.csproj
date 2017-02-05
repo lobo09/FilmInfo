@@ -74,6 +74,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -108,6 +109,7 @@
     <Compile Include="Services\DataService.cs" />
     <Compile Include="Utility\CustomCommand.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
+    <Compile Include="Utility\ProgressEventArgs.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainView.xaml.cs">
@@ -160,6 +162,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\NoImage.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NoImage.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

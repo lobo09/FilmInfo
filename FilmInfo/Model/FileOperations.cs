@@ -23,9 +23,7 @@ namespace FilmInfo.Model
             dlg.EnsureValidNames = true;
             dlg.Multiselect = false;
             dlg.ShowPlacesList = true;
-            dlg.ShowDialog();
-
-            return dlg.FileName;
+            return dlg.ShowDialog() == CommonFileDialogResult.Ok ? dlg.FileName : null;
         }
     }
 }

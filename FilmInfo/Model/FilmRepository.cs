@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FilmInfo.Properties;
+using FilmInfo.Utility;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,6 +10,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace FilmInfo.Model
 {
@@ -15,6 +19,7 @@ namespace FilmInfo.Model
     {
         public List<Movie> FilmDatabase { get; set; }
         public string RootDirectory { get; private set; }
+        public event EventHandler<ProgressEventArgs> ScanProgressChanged;
 
         public FilmRepository()
         {
@@ -25,14 +30,17 @@ namespace FilmInfo.Model
         {
             FilmDatabase.Clear();
             RootDirectory = rootDirectory;
-                var directorys = new DirectoryInfo(rootDirectory).EnumerateDirectories();
-                foreach (var directory in directorys)
-                {
-                    var movie = SetFilesInMovie(directory);
-                    movie = SetFieldsInMovie(directory, movie);
-                    FilmDatabase.Add(movie);
-                }
-                FilmDatabase.RemoveAll(m => m.MkvFile == null);
+            var directorys = new DirectoryInfo(RootDirectory).EnumerateDirectories();
+            int actualDir = 1;
+            int maxDir = directorys.Count();
+            foreach (var directory in directorys)
+            {
+                var movie = SetAllFilesInMovie(directory);
+                movie = SetAllFieldsInMovie(directory, movie);
+                FilmDatabase.Add(movie);
+                ScanProgressChanged(this, new ProgressEventArgs(actualDir++,maxDir));
+            }
+            FilmDatabase.RemoveAll(m => m.MkvFile == null);
             return FilmDatabase.Count != 0 ? true : false;
         }
 
@@ -79,7 +87,7 @@ namespace FilmInfo.Model
             return movieList;
         }
 
-        private Movie SetFilesInMovie(DirectoryInfo directory)
+        private Movie SetAllFilesInMovie(DirectoryInfo directory)
         {
             var movie = new Movie();
             List<FileInfo> files = new List<FileInfo>(directory.EnumerateFiles().ToList());
@@ -104,12 +112,12 @@ namespace FilmInfo.Model
             else
             {
                 movie.PosterFile = "NoImage.jpg";
-                movie.PosterFileFull = @"\Resources\Images\NoImage.jpg";
+                movie.PosterFileFull = @"pack://application:,,,/Resources/Images/NoImage.jpg";
             }
             return movie;
         }
 
-        private Movie SetFieldsInMovie(DirectoryInfo directory, Movie movie)
+        private Movie SetAllFieldsInMovie(DirectoryInfo directory, Movie movie)
         {
             movie.Name = directory.Name;
 
@@ -117,9 +125,21 @@ namespace FilmInfo.Model
             if (Year.Count() == 6)
                 movie.Year = int.Parse(Year.Remove(0, 1).Remove(4, 1));
 
-            if (movie.MkvFile != null) movie.MkvCreationTime = File.GetCreationTime(movie.MkvFileFull);
+            if (movie.MkvFileFull != null) movie.MkvCreationTime = File.GetCreationTime(movie.MkvFileFull);
 
+            if (movie.PosterFileFull != null)
+                movie.Poster = LoadBitmapImage(movie.PosterFileFull);
             return movie;
+        }
+
+        private BitmapImage LoadBitmapImage(string path)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+            return bitmapImage;
         }
     }
 }

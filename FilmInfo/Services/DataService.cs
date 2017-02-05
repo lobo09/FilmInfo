@@ -21,16 +21,21 @@ namespace FilmInfo.Services
             fileOperations = new FileOperations();
         }
 
-        public ObservableCollection<Movie> GetAllMovies()
+        public void RegisterProgressChanged(EventHandler<ProgressEventArgs> processEventHandler)
         {
-            return filmRepository.FilmDatabase.ToObservableCollection();
+            filmRepository.ScanProgressChanged += processEventHandler;
         }
 
         public async Task<bool> ScanAllMoviesAsync()
         {
-            var rootDirectory = fileOperations.GetRootDirectory();
-            var result = Task.Run(() => filmRepository.ScanAllMovies(rootDirectory));
-            return await result;
+            string rootDirectory = fileOperations.GetRootDirectory();
+            if (rootDirectory != null)
+            {
+                var result = await Task.Run(() => filmRepository.ScanAllMovies(rootDirectory));
+                return result;
+            }
+            else
+                return false;
         }
 
         public ObservableCollection<Movie> GetProcessedMovies(string sortType, string filter)
