@@ -25,18 +25,15 @@ namespace FilmInfo.Model
         {
             FilmDatabase.Clear();
             RootDirectory = rootDirectory;
-            var directorys = new DirectoryInfo(rootDirectory).EnumerateDirectories();
-
-            foreach (var directory in directorys)
-            {
-                var movie = SetFilesInMovie(directory);
-                movie = SetFieldsInMovie(directory, movie);
-                FilmDatabase.Add(movie);
-            }
-            FilmDatabase.RemoveAll(m => m.MkvFile == null);
-
-            if (FilmDatabase.Count != 0) return true;
-            else return false;
+                var directorys = new DirectoryInfo(rootDirectory).EnumerateDirectories();
+                foreach (var directory in directorys)
+                {
+                    var movie = SetFilesInMovie(directory);
+                    movie = SetFieldsInMovie(directory, movie);
+                    FilmDatabase.Add(movie);
+                }
+                FilmDatabase.RemoveAll(m => m.MkvFile == null);
+            return FilmDatabase.Count != 0 ? true : false;
         }
 
         public List<Movie> GetProcessedMovies(string sortType, string filter)
@@ -63,7 +60,7 @@ namespace FilmInfo.Model
             return movieList;
         }
 
-       private List<Movie> SortMovies(List<Movie> movieList,string sortType)
+        private List<Movie> SortMovies(List<Movie> movieList, string sortType)
         {
             switch (sortType)
             {

@@ -26,10 +26,11 @@ namespace FilmInfo.Services
             return filmRepository.FilmDatabase.ToObservableCollection();
         }
 
-        public bool ScanAllMovies()
+        public async Task<bool> ScanAllMoviesAsync()
         {
             var rootDirectory = fileOperations.GetRootDirectory();
-            return filmRepository.ScanAllMovies(rootDirectory);
+            var result = Task.Run(() => filmRepository.ScanAllMovies(rootDirectory));
+            return await result;
         }
 
         public ObservableCollection<Movie> GetProcessedMovies(string sortType, string filter)

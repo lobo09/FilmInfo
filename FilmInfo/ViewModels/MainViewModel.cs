@@ -81,12 +81,12 @@ namespace FilmInfo.ViewModels
 
         private void LoadCommands()
         {
-            ScanDirectoryCommand = new CustomCommand(ScanDirectory);
+            ScanDirectoryCommand = new CustomCommand(ScanDirectoryAsync);
         }
 
-        private void ScanDirectory(object obj)
+        private async void ScanDirectoryAsync(object obj)
         {
-            dataService.ScanAllMovies();
+            await dataService.ScanAllMoviesAsync();
             Movies = dataService.GetAllMovies();
         }
 
