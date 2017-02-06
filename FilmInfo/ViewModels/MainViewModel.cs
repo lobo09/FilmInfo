@@ -11,6 +11,8 @@ using FilmInfo.Model;
 using System.IO;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
+using System.Threading;
 
 namespace FilmInfo.ViewModels
 {
@@ -29,6 +31,17 @@ namespace FilmInfo.ViewModels
             {
                 scanProgress = value;
                 RaisePropertyChanged("ScanProgress");
+            }
+        }
+
+        private bool scanActive;
+        public bool ScanActive
+        {
+            get { return scanActive; }
+            set
+            {
+                scanActive = value;
+                RaisePropertyChanged("ScanActive");
             }
         }
 
@@ -90,7 +103,10 @@ namespace FilmInfo.ViewModels
         {
             LoadCommands();
             dataService = new DataService();
-            dataService.RegisterProgressChanged(OnProgressChanged);
+            var Movies = new ObservableCollection<Movie>();
+            dataService.RegisterScanProgressStarted(OnScanProgressStarted);
+            dataService.RegisterScanProgressChanged(OnScanProgressChanged);
+            dataService.RegisterScanProgressCompleted(OnScanProgressCompleted);
             SortOption = "name";
         }
 
@@ -100,9 +116,20 @@ namespace FilmInfo.ViewModels
             GetPosterCommand = new CustomCommand(GetPoster);
         }
 
-        private void OnProgressChanged(object o, ProgressEventArgs e)
+        private void OnScanProgressStarted(object o, ProgressEventArgs e)
+        {
+            Movies.Clear();
+            ScanActive = true;
+        }
+
+        private void OnScanProgressChanged(object o, ProgressEventArgs e)
         {
             ScanProgress = (int)e.PercentFinished;
+        }
+
+        private void OnScanProgressCompleted(object o, ProgressEventArgs e)
+        {
+            ScanActive = false;
         }
 
         private async void ScanDirectoryAsync(object obj)

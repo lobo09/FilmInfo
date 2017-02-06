@@ -12,26 +12,33 @@ namespace FilmInfo.Services
     public class DataService
     {
         private FilmRepository filmRepository;
-        private FileOperations fileOperations;
-
 
         public DataService()
         {
             filmRepository = new FilmRepository();
-            fileOperations = new FileOperations();
         }
 
-        public void RegisterProgressChanged(EventHandler<ProgressEventArgs> processEventHandler)
+        public void RegisterScanProgressStarted(EventHandler<ProgressEventArgs> processEventHandler)
+        {
+            filmRepository.ScanProgressStarted += processEventHandler;
+        }
+
+        public void RegisterScanProgressChanged(EventHandler<ProgressEventArgs> processEventHandler)
         {
             filmRepository.ScanProgressChanged += processEventHandler;
         }
 
+        public void RegisterScanProgressCompleted(EventHandler<ProgressEventArgs> processEventHandler)
+        {
+            filmRepository.ScanProgressCompleted += processEventHandler;
+        }
+
         public async Task<bool> ScanAllMoviesAsync()
         {
-            string rootDirectory = fileOperations.GetRootDirectory();
+            string rootDirectory = FileOperations.GetDirectory();
             if (rootDirectory != null)
             {
-                var result = await Task.Run(() => filmRepository.ScanAllMovies(rootDirectory));
+                var result = await filmRepository.ScanAllMovies(rootDirectory);
                 return result;
             }
             else

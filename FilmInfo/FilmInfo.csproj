@@ -102,6 +102,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\SortOptionToBoolConverter.cs" />
     <Compile Include="Model\FileOperations.cs" />
     <Compile Include="Model\Movie.cs" />
@@ -164,7 +165,7 @@
     <Resource Include="Resources\Images\NoImage.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\NoImage.jpg" />
+    <Resource Include="Resources\Images\scanning.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

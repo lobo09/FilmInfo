@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -19,28 +20,39 @@ namespace FilmInfo.Model
     {
         public List<Movie> FilmDatabase { get; set; }
         public string RootDirectory { get; private set; }
+        public event EventHandler<ProgressEventArgs> ScanProgressStarted;
         public event EventHandler<ProgressEventArgs> ScanProgressChanged;
+        public event EventHandler<ProgressEventArgs> ScanProgressCompleted;
 
         public FilmRepository()
         {
             FilmDatabase = new List<Movie>();
         }
 
-        public bool ScanAllMovies(string rootDirectory)
+        public async Task<bool> ScanAllMovies(string rootDirectory)
         {
-            FilmDatabase.Clear();
-            RootDirectory = rootDirectory;
-            var directorys = new DirectoryInfo(RootDirectory).EnumerateDirectories();
-            int actualDir = 1;
-            int maxDir = directorys.Count();
-            foreach (var directory in directorys)
-            {
-                var movie = SetAllFilesInMovie(directory);
-                movie = SetAllFieldsInMovie(directory, movie);
-                FilmDatabase.Add(movie);
-                ScanProgressChanged(this, new ProgressEventArgs(actualDir++,maxDir));
-            }
-            FilmDatabase.RemoveAll(m => m.MkvFile == null);
+            ScanProgressStarted(this, new ProgressEventArgs());
+
+            await Task.Run(() =>
+                {
+                    FilmDatabase.Clear();
+                    RootDirectory = rootDirectory;
+                    var directorys = new DirectoryInfo(RootDirectory).EnumerateDirectories();
+                    int actualDir = 1;
+                    int maxDir = directorys.Count();
+
+                    foreach (var directory in directorys)
+                    {
+                        var movie = SetAllFilesInMovie(directory);
+                        movie = SetAllFieldsInMovie(directory, movie);
+                        FilmDatabase.Add(movie);
+                        ScanProgressChanged(this, new ProgressEventArgs(actualDir++, maxDir));
+                    }
+                    FilmDatabase.RemoveAll(m => m.MkvFile == null);
+                });
+
+            ScanProgressCompleted(this, new ProgressEventArgs());
+
             return FilmDatabase.Count != 0 ? true : false;
         }
 
@@ -128,18 +140,10 @@ namespace FilmInfo.Model
             if (movie.MkvFileFull != null) movie.MkvCreationTime = File.GetCreationTime(movie.MkvFileFull);
 
             if (movie.PosterFileFull != null)
-                movie.Poster = LoadBitmapImage(movie.PosterFileFull);
+                movie.Poster = FileOperations.LoadBitmapImage(movie.PosterFileFull);
             return movie;
         }
 
-        private BitmapImage LoadBitmapImage(string path)
-        {
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
-            return bitmapImage;
-        }
+       
     }
 }

@@ -2,10 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:FilmInfo"
-             xmlns:coverter="clr-namespace:FilmInfo.Converter"
+             xmlns:converter="clr-namespace:FilmInfo.Converter"
              StartupUri="Views/MainView.xaml">
     <Application.Resources>
+        <BitmapImage x:Key="ScanningBitmap" UriSource="/Resources/Images/scanning.png"/>
         <local:ViewModelLocator x:Key="ViewModelLocator"/>
-        <coverter:SortOptionToBoolConverter x:Key="SortOptionToBoolConverter"/>
+        <converter:SortOptionToBoolConverter x:Key="SortOptionToBoolConverter"/>
+        <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Application.Resources>
 </Application>

@@ -8,6 +8,11 @@ namespace FilmInfo.Utility
 {
     public class ProgressEventArgs : EventArgs
     {
+        public ProgressEventArgs()
+        {
+
+        }
+
         public ProgressEventArgs(double percentFinished)
         {
             PercentFinished = percentFinished;

@@ -5,12 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace FilmInfo.Model
 {
     public class FileOperations
     {
-        public string GetRootDirectory()
+        public static string GetDirectory()
         {
             var dlg = new CommonOpenFileDialog();
             dlg.Title = "Choose root Folder...";
@@ -24,6 +25,16 @@ namespace FilmInfo.Model
             dlg.Multiselect = false;
             dlg.ShowPlacesList = true;
             return dlg.ShowDialog() == CommonFileDialogResult.Ok ? dlg.FileName : null;
+        }
+
+        public static BitmapImage LoadBitmapImage(string path)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+            return bitmapImage;
         }
     }
 }
