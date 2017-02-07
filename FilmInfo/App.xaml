@@ -7,7 +7,7 @@
     <Application.Resources>
         <BitmapImage x:Key="ScanningBitmap" UriSource="/Resources/Images/scanning.png"/>
         <local:ViewModelLocator x:Key="ViewModelLocator"/>
-        <converter:SortOptionToBoolConverter x:Key="SortOptionToBoolConverter"/>
         <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converter:SortOptionToBoolConverter x:Key="SortOptionToBoolConverter"/>
     </Application.Resources>
 </Application>

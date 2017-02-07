@@ -20,6 +20,7 @@ namespace FilmInfo.ViewModels
     {
         public CustomCommand ScanDirectoryCommand { get; set; }
         public CustomCommand GetPosterCommand { get; set; }
+        public CustomCommand OpenDetailViewCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         private DataService dataService;
 
@@ -114,8 +115,9 @@ namespace FilmInfo.ViewModels
         {
             ScanDirectoryCommand = new CustomCommand(ScanDirectoryAsync);
             GetPosterCommand = new CustomCommand(GetPoster);
+            OpenDetailViewCommand = new CustomCommand(OpenDetailView);
         }
-
+        
         private void OnScanProgressStarted(object o, ProgressEventArgs e)
         {
             Movies.Clear();
@@ -142,6 +144,11 @@ namespace FilmInfo.ViewModels
         {
             var movie = obj as Movie;
             throw new NotImplementedException("Get Poster noch nicht implementiert!");
+        }
+
+        private void OpenDetailView(object obj)
+        {
+            ViewModelLocator.OpenDetailView(obj as Movie);
         }
 
         private void RefreshMovieList()
