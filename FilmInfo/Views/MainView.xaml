@@ -3,26 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FilmInfo"
+        xmlns:local="clr-namespace:FilmInfo.Views"
+    xmlns:utility="clr-namespace:FilmInfo.Utility"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
-        xmlns:ViewModels="clr-namespace:FilmInfo.ViewModels" x:Class="FilmInfo.MainView" 
+        xmlns:ViewModels="clr-namespace:FilmInfo.ViewModels" 
+        xmlns:pi="http://schemas.microsoft.com/prototyping/2010/interactivity" 
+        x:Class="FilmInfo.Views.MainView" 
         mc:Ignorable="d"
         Title="FilmInfo" 
         ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
         <DataTemplate x:Key="ItemTemplate">
-
-            <Grid Height="525" Width="375">
-                <Grid.LayoutTransform>
-                    <ScaleTransform x:Name="scaleTrans" CenterX="0" CenterY="0" ScaleX="{Binding Value, ElementName=uiScaleSlider}" ScaleY="{Binding Value, ElementName=uiScaleSlider}"/>
-                </Grid.LayoutTransform>
-                <!--<Grid.Effect>
-                    <DropShadowEffect Color="Gray" BlurRadius="14" ShadowDepth="10" Direction="225"/>
-                </Grid.Effect>-->
+                <Grid Height="525" Width="375">
+                    <Grid.LayoutTransform>
+                        <ScaleTransform x:Name="scaleTrans" CenterX="0" CenterY="0" ScaleX="{Binding Value, ElementName=uiScaleSlider}" ScaleY="{Binding Value, ElementName=uiScaleSlider}"/>
+                    </Grid.LayoutTransform>
                 <Image Source="{Binding Poster}" Margin="5"/>
                 <TextBlock Text="{Binding Name}" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" MaxWidth="250" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#BFFFFFFF" />
-            </Grid>
+                </Grid>
         </DataTemplate>
     </Window.Resources>
 
@@ -46,20 +45,20 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Background="#FFF0F0F0">
+            <StackPanel Background="#FFF0F0F0" IsEnabled="{Binding MoviesProcessed}">
                 <!--<Label Content="Sortierung:" FontSize="15" Margin="2,10,0,0" FontWeight="Bold"/>-->
                 <GroupBox Header="Sortierung:" Margin="5,5,5,5" FontSize="15" FontWeight="Bold" BorderBrush="DarkGray">
                     <StackPanel>
-                        <RadioButton Margin="2" FontSize="15" FontWeight="Medium" Content="Name" GroupName="SortGroup" IsChecked="{Binding SortOption ,Converter={StaticResource SortOptionToBoolConverter}, ConverterParameter=name}"/>
-                        <RadioButton Margin="2" FontSize="15" FontWeight="Medium" Content="Jahr" GroupName="SortGroup" IsChecked="{Binding SortOption, Converter={StaticResource SortOptionToBoolConverter}, ConverterParameter=year}"/>
-                        <RadioButton Margin="2" FontSize="15" FontWeight="Medium" Content="Neueste" GroupName="SortGroup" IsChecked="{Binding SortOption, Converter={StaticResource SortOptionToBoolConverter}, ConverterParameter=newest}"/>
+                        <ComboBox Margin="5" FontSize="12" FontWeight="Normal" ItemsSource="{Binding Source={utility:EnumBindingSource {x:Type utility:SortOrderEnum}}}" SelectedItem="{Binding SortOrder}"/>
+                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Name" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=name, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Jahr" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=year, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Neueste" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=newest, Converter={StaticResource SortOptionToBoolConverter}}"/>
                     </StackPanel>
                 </GroupBox>
-                <!--<Label Content="Filter:" FontSize="15" Margin="2,0,0,0" FontWeight="Bold"/>-->
                 <GroupBox Header="Filter:" Margin="5,5,5,5" FontSize="15" FontWeight="Bold" BorderBrush="DarkGray">
                     <StackPanel>
-                    <TextBox FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}"/>
-                    <ComboBox Margin="5"/>
+                        <TextBox FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding Filter, Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
@@ -78,13 +77,14 @@
                          ItemsSource="{Binding Movies}" SelectedItem="{Binding SelectedMovie}">
 
                     <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
+                        <Style TargetType="{x:Type ListBoxItem}">
                             <Setter Property="ContextMenu">
                                 <Setter.Value>
                                     <ContextMenu>
                                         <MenuItem Header="{Binding Name, Mode=OneWay}" FontWeight="Bold" IsEnabled="False" FontSize="9"/>
                                         <Separator/>
                                         <MenuItem Header="Get Poster" Command="{Binding MainViewModel.GetPosterCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}" />
+                                        <MenuItem  Header="Open Details..." Command="{Binding MainViewModel.OpenDetailViewCommand ,Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
