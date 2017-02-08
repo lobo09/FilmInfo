@@ -45,9 +45,9 @@ namespace FilmInfo.Services
                 return false;
         }
 
-        public ObservableCollection<Movie> GetProcessedMovies(string sortType, string filter)
+        public ObservableCollection<Movie> GetProcessedMovies(string sortType, SortOrderEnum sortOrder, string filter)
         {
-            return filmRepository.GetProcessedMovies(sortType, filter).ToObservableCollection();
+            return filmRepository.GetProcessedMovies(sortType, sortOrder, filter).ToObservableCollection();
         }
     }
 }

@@ -56,7 +56,7 @@ namespace FilmInfo.Model
             return FilmDatabase.Count != 0 ? true : false;
         }
 
-        public List<Movie> GetProcessedMovies(string sortType, string filter)
+        public List<Movie> GetProcessedMovies(string sortType, SortOrderEnum sortOrder, string filter)
         {
             var processedMovieList = FilmDatabase;
 
@@ -67,7 +67,7 @@ namespace FilmInfo.Model
 
             if (!string.IsNullOrEmpty(sortType))
             {
-                processedMovieList = SortMovies(processedMovieList, sortType);
+                processedMovieList = SortMovies(processedMovieList, sortType, sortOrder);
             }
             return processedMovieList;
         }
@@ -80,20 +80,29 @@ namespace FilmInfo.Model
             return movieList;
         }
 
-        private List<Movie> SortMovies(List<Movie> movieList, string sortType)
+        private List<Movie> SortMovies(List<Movie> movieList, string sortType, SortOrderEnum sortOrder)
         {
             switch (sortType)
             {
                 case "name":
-                    movieList = movieList.OrderBy(m => m.Name).ToList();
+                    if (sortOrder == SortOrderEnum.Aufsteigend)
+                        movieList = movieList.OrderBy(m => m.Name).ToList();
+                    else
+                        movieList = movieList.OrderByDescending(m => m.Name).ToList();
                     break;
 
                 case "year":
-                    movieList = movieList.OrderByDescending(m => m.Year).ToList();
+                    if (sortOrder == SortOrderEnum.Aufsteigend)
+                        movieList = movieList.OrderBy(m => m.Year).ToList();
+                    else
+                        movieList = movieList.OrderByDescending(m => m.Year).ToList();
                     break;
 
                 case "newest":
-                    movieList = movieList.OrderByDescending(m => m.MkvCreationTime).ToList();
+                    if (sortOrder == SortOrderEnum.Aufsteigend)
+                        movieList = movieList.OrderByDescending(m => m.MkvCreationTime).ToList();
+                    else
+                        movieList = movieList.OrderBy(m => m.MkvCreationTime).ToList();
                     break;
             }
             return movieList;
@@ -144,6 +153,6 @@ namespace FilmInfo.Model
             return movie;
         }
 
-       
+
     }
 }

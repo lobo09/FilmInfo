@@ -114,9 +114,12 @@
     <Compile Include="Model\Movie.cs" />
     <Compile Include="Model\FilmRepository.cs" />
     <Compile Include="Services\DataService.cs" />
+    <Compile Include="Services\DialogService.cs" />
     <Compile Include="Utility\CustomCommand.cs" />
+    <Compile Include="Utility\EnumBindingSourceExtension.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="Utility\ProgressEventArgs.cs" />
+    <Compile Include="Utility\SortOrderEnum.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\DetailViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

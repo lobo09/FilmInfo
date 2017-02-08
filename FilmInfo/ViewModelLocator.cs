@@ -13,7 +13,6 @@ namespace FilmInfo
     {
         private static MainViewModel mainViewModel = new MainViewModel();
         private static DetailViewModel detailViewModel = new DetailViewModel();
-        private static DetailView detailView = new DetailView();
 
         public static MainViewModel MainViewModel
         {
@@ -29,12 +28,6 @@ namespace FilmInfo
             {
                 return detailViewModel;
             }
-        }
-
-        public static void OpenDetailView(Movie movie)
-        {
-            //detailView = new DetailView();
-            detailView.Show();
         }
     }
 }

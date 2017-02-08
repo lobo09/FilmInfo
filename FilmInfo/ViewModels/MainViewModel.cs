@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 using System.Threading;
+using System.Windows.Controls;
 
 namespace FilmInfo.ViewModels
 {
@@ -23,6 +24,7 @@ namespace FilmInfo.ViewModels
         public CustomCommand OpenDetailViewCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         private DataService dataService;
+        private DialogService dialogService;
 
         private int scanProgress;
         public int ScanProgress
@@ -75,6 +77,18 @@ namespace FilmInfo.ViewModels
             }
         }
 
+        private bool moviesProcessed;
+        public bool MoviesProcessed
+        {
+            get { return moviesProcessed; }
+            set
+            {
+                moviesProcessed = value;
+                RaisePropertyChanged("MoviesProcessed");
+            }
+        }
+
+
         private string filter;
         public string Filter
         {
@@ -99,11 +113,23 @@ namespace FilmInfo.ViewModels
             }
         }
 
+        private SortOrderEnum sortOrder;
+        public SortOrderEnum SortOrder
+        {
+            get { return sortOrder; }
+            set
+            {
+                sortOrder = value;
+                RaisePropertyChanged("SortOrder");
+                RefreshMovieList();
+            }
+        }
 
         public MainViewModel()
         {
             LoadCommands();
             dataService = new DataService();
+            dialogService = new DialogService();
             var Movies = new ObservableCollection<Movie>();
             dataService.RegisterScanProgressStarted(OnScanProgressStarted);
             dataService.RegisterScanProgressChanged(OnScanProgressChanged);
@@ -120,6 +146,7 @@ namespace FilmInfo.ViewModels
         
         private void OnScanProgressStarted(object o, ProgressEventArgs e)
         {
+            MoviesProcessed = false;
             Movies.Clear();
             ScanActive = true;
         }
@@ -132,12 +159,13 @@ namespace FilmInfo.ViewModels
         private void OnScanProgressCompleted(object o, ProgressEventArgs e)
         {
             ScanActive = false;
+            RefreshMovieList();
+            MoviesProcessed = true;
         }
 
         private async void ScanDirectoryAsync(object obj)
         {
             await dataService.ScanAllMoviesAsync();
-            RefreshMovieList();
         }
 
         private void GetPoster(object obj)
@@ -148,12 +176,12 @@ namespace FilmInfo.ViewModels
 
         private void OpenDetailView(object obj)
         {
-            ViewModelLocator.OpenDetailView(obj as Movie);
+            dialogService.OpenDetailView();
         }
 
         private void RefreshMovieList()
         {
-            Movies = dataService.GetProcessedMovies(SortOption, Filter);
+            Movies = dataService.GetProcessedMovies(SortOption, SortOrder, Filter);
         }
 
 
