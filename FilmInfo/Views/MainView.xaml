@@ -15,13 +15,13 @@
 
     <Window.Resources>
         <DataTemplate x:Key="ItemTemplate">
-                <Grid Height="525" Width="375">
-                    <Grid.LayoutTransform>
-                        <ScaleTransform x:Name="scaleTrans" CenterX="0" CenterY="0" ScaleX="{Binding Value, ElementName=uiScaleSlider}" ScaleY="{Binding Value, ElementName=uiScaleSlider}"/>
-                    </Grid.LayoutTransform>
+            <Grid Height="525" Width="375">
+                <Grid.LayoutTransform>
+                    <ScaleTransform x:Name="scaleTrans" CenterX="0" CenterY="0" ScaleX="{Binding Value, ElementName=uiScaleSlider}" ScaleY="{Binding Value, ElementName=uiScaleSlider}"/>
+                </Grid.LayoutTransform>
                 <Image Source="{Binding Poster}" Margin="5"/>
                 <TextBlock Text="{Binding Name}" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" MaxWidth="250" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#BFFFFFFF" />
-                </Grid>
+            </Grid>
         </DataTemplate>
     </Window.Resources>
 
@@ -35,8 +35,23 @@
                 <MenuItem Header="scan folder..." Command="{Binding ScanDirectoryCommand}"/>
             </MenuItem>
         </Menu>
-        <StatusBar DockPanel.Dock="Bottom" >
-            <Slider x:Name="uiScaleSlider" Width="150" Minimum="0.2" Maximum="2" Value="1" />
+        <StatusBar DockPanel.Dock="Bottom" FontWeight="Bold" >
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                <Label Content="{Binding MovieCountLabel}"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="1" Margin="0,0,20,0">
+                <Slider x:Name="uiScaleSlider" Width="200" Minimum="0.2" Maximum="2" Value="1" />
+            </StatusBarItem>
         </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -52,13 +67,13 @@
                         <ComboBox Margin="5" FontSize="12" FontWeight="Normal" ItemsSource="{Binding Source={utility:EnumBindingSource {x:Type utility:SortOrderEnum}}}" SelectedItem="{Binding SortOrder}"/>
                         <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Name" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=name, Converter={StaticResource SortOptionToBoolConverter}}"/>
                         <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Jahr" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=year, Converter={StaticResource SortOptionToBoolConverter}}"/>
-                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Neueste" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=newest, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Hinzugefügt" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=newest, Converter={StaticResource SortOptionToBoolConverter}}"/>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Filter:" Margin="5,5,5,5" FontSize="15" FontWeight="Bold" BorderBrush="DarkGray">
                     <StackPanel>
                         <TextBox FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding Filter, Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        
+
                     </StackPanel>
                 </GroupBox>
             </StackPanel>

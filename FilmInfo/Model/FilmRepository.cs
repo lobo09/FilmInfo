@@ -100,9 +100,9 @@ namespace FilmInfo.Model
 
                 case "newest":
                     if (sortOrder == SortOrderEnum.Aufsteigend)
-                        movieList = movieList.OrderByDescending(m => m.MkvCreationTime).ToList();
-                    else
                         movieList = movieList.OrderBy(m => m.MkvCreationTime).ToList();
+                    else
+                        movieList = movieList.OrderByDescending(m => m.MkvCreationTime).ToList();
                     break;
             }
             return movieList;

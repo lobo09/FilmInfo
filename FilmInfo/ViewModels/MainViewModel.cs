@@ -26,6 +26,7 @@ namespace FilmInfo.ViewModels
         private DataService dataService;
         private DialogService dialogService;
 
+        #region Properties
         private int scanProgress;
         public int ScanProgress
         {
@@ -63,6 +64,18 @@ namespace FilmInfo.ViewModels
             }
         }
 
+        private string movieCountLabel;
+        public string MovieCountLabel
+        {
+            get { return movieCountLabel; }
+            set
+            {
+                movieCountLabel = value;
+                RaisePropertyChanged("MovieCountLabel");
+            }
+        }
+
+
         private ObservableCollection<Movie> movies;
         public ObservableCollection<Movie> Movies
         {
@@ -73,6 +86,7 @@ namespace FilmInfo.ViewModels
             set
             {
                 movies = value;
+                MovieCountLabel = $"{movies.Count} Filme";
                 RaisePropertyChanged("Movies");
             }
         }
@@ -124,26 +138,21 @@ namespace FilmInfo.ViewModels
                 RefreshMovieList();
             }
         }
+        #endregion
 
         public MainViewModel()
         {
+            Movies = new ObservableCollection<Movie>();
             LoadCommands();
             dataService = new DataService();
             dialogService = new DialogService();
-            var Movies = new ObservableCollection<Movie>();
             dataService.RegisterScanProgressStarted(OnScanProgressStarted);
             dataService.RegisterScanProgressChanged(OnScanProgressChanged);
             dataService.RegisterScanProgressCompleted(OnScanProgressCompleted);
             SortOption = "name";
         }
 
-        private void LoadCommands()
-        {
-            ScanDirectoryCommand = new CustomCommand(ScanDirectoryAsync);
-            GetPosterCommand = new CustomCommand(GetPoster);
-            OpenDetailViewCommand = new CustomCommand(OpenDetailView);
-        }
-        
+        #region Eventhandler
         private void OnScanProgressStarted(object o, ProgressEventArgs e)
         {
             MoviesProcessed = false;
@@ -162,10 +171,19 @@ namespace FilmInfo.ViewModels
             RefreshMovieList();
             MoviesProcessed = true;
         }
+        #endregion
+
+        #region Commands
+        private void LoadCommands()
+        {
+            ScanDirectoryCommand = new CustomCommand(ScanDirectoryAsync);
+            GetPosterCommand = new CustomCommand(GetPoster);
+            OpenDetailViewCommand = new CustomCommand(OpenDetailView);
+        }
 
         private async void ScanDirectoryAsync(object obj)
         {
-            await dataService.ScanAllMoviesAsync();
+           await dataService.ScanAllMoviesAsync();
         }
 
         private void GetPoster(object obj)
@@ -178,13 +196,12 @@ namespace FilmInfo.ViewModels
         {
             dialogService.OpenDetailView();
         }
+        #endregion
 
         private void RefreshMovieList()
         {
             Movies = dataService.GetProcessedMovies(SortOption, SortOrder, Filter);
         }
-
-
 
         private void RaisePropertyChanged(string propertyName)
         {
