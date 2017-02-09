@@ -15,7 +15,7 @@ namespace FilmInfo.Services
         public void OpenDetailView()
         {
             detailView = new DetailView();
-            detailView.Show();
+            detailView.ShowDialog();
         }
 
         public void CloseDetailView()

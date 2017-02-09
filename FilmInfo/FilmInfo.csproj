@@ -96,6 +96,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <DesignData Include="SampleData\DetailViewModelSampleData.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </DesignData>
     <Page Include="Views\DetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -116,8 +120,9 @@
     <Compile Include="Services\DataService.cs" />
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Utility\CustomCommand.cs" />
-    <Compile Include="Utility\EnumBindingSourceExtension.cs" />
-    <Compile Include="Utility\ExtensionMethods.cs" />
+    <Compile Include="Extensions\EnumBindingSourceExtension.cs" />
+    <Compile Include="Extensions\ExtensionMethods.cs" />
+    <Compile Include="Utility\Messenger.cs" />
     <Compile Include="Utility\ProgressEventArgs.cs" />
     <Compile Include="Utility\SortOrderEnum.cs" />
     <Compile Include="ViewModelLocator.cs" />
@@ -173,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
+    <Folder Include="SampleData\SampleDataSource\SampleDataSource_Files\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\NoImage.jpg" />

@@ -194,6 +194,7 @@ namespace FilmInfo.ViewModels
 
         private void OpenDetailView(object obj)
         {
+            Messenger.Default.Send<Movie>(SelectedMovie);
             dialogService.OpenDetailView();
         }
         #endregion
