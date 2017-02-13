@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace FilmInfo.Model
-{   
+{
     public class Movie
     {
         public string Name { get; set; }

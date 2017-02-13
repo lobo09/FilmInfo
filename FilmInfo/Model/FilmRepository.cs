@@ -72,6 +72,15 @@ namespace FilmInfo.Model
             return processedMovieList;
         }
 
+        public void UpdateMovie(Movie movie, Movie movieFromTMDb)
+        {
+            var index = FilmDatabase.IndexOf(movie);
+            if (index != -1)
+            {
+                FilmDatabase[index] = movieFromTMDb;
+            }
+        }
+
         private List<Movie> FilterMovies(List<Movie> movieList, string filter)
         {
             if (!string.IsNullOrEmpty(filter))
@@ -140,11 +149,17 @@ namespace FilmInfo.Model
 
         private Movie SetAllFieldsInMovie(DirectoryInfo directory, Movie movie)
         {
-            movie.Name = directory.Name;
+            var Year = Regex.Match(directory.Name, @"\(\d{4}\)").Value;
 
-            string Year = Regex.Match(directory.Name, @"\(\d{4}\)").Value;
             if (Year.Count() == 6)
+            {
+                movie.Name = directory.Name.Remove(directory.Name.Length - 7); ;
                 movie.Year = int.Parse(Year.Remove(0, 1).Remove(4, 1));
+            }
+            else
+            {
+                movie.Name = directory.Name;
+            }
 
             if (movie.MkvFileFull != null) movie.MkvCreationTime = File.GetCreationTime(movie.MkvFileFull);
 

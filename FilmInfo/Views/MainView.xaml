@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FilmInfo.Views"
-    xmlns:utility="clr-namespace:FilmInfo.Utility"
+        xmlns:utility="clr-namespace:FilmInfo.Utility"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
         xmlns:ViewModels="clr-namespace:FilmInfo.ViewModels" 
         xmlns:pi="http://schemas.microsoft.com/prototyping/2010/interactivity" 
@@ -99,6 +99,8 @@
                                         <MenuItem Header="{Binding Name, Mode=OneWay}" FontWeight="Bold" IsEnabled="False" FontSize="9"/>
                                         <Separator/>
                                         <MenuItem Header="Get Poster" Command="{Binding MainViewModel.GetPosterCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}" />
+                                        <MenuItem Header="Get Details from TMDb" Command="{Binding MainViewModel.GetDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
+                                        <Separator/>
                                         <MenuItem  Header="Open Details..." Command="{Binding MainViewModel.OpenDetailViewCommand ,Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
                                     </ContextMenu>
                                 </Setter.Value>

@@ -21,6 +21,7 @@ namespace FilmInfo.ViewModels
     {
         public CustomCommand ScanDirectoryCommand { get; set; }
         public CustomCommand GetPosterCommand { get; set; }
+        public CustomCommand GetDetailFromTMDbCommand { get; set; }
         public CustomCommand OpenDetailViewCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         private DataService dataService;
@@ -178,18 +179,30 @@ namespace FilmInfo.ViewModels
         {
             ScanDirectoryCommand = new CustomCommand(ScanDirectoryAsync);
             GetPosterCommand = new CustomCommand(GetPoster);
+            GetDetailFromTMDbCommand = new CustomCommand(GetDetailFromTMDb);
             OpenDetailViewCommand = new CustomCommand(OpenDetailView);
         }
 
         private async void ScanDirectoryAsync(object obj)
         {
-           await dataService.ScanAllMoviesAsync();
+            await dataService.ScanAllMoviesAsync();
         }
 
         private void GetPoster(object obj)
         {
             var movie = obj as Movie;
             throw new NotImplementedException("Get Poster noch nicht implementiert!");
+        }
+
+        private void GetDetailFromTMDb(object obj)
+        {
+            var movie = obj as Movie;
+            if (movie != null)
+            {
+                var movieFromTMDb = dataService.GetDetailsFromTMDb(movie as Movie);
+                dataService.UpdateMovie(movie, movieFromTMDb);
+                RefreshMovieList();
+            }
         }
 
         private void OpenDetailView(object obj)
