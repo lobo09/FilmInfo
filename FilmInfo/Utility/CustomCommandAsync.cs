@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FilmInfo.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,17 +8,17 @@ using System.Windows.Input;
 
 namespace FilmInfo.Utility
 {
-    public class CustomCommand : ICommand
+    public class CustomCommandAsync : ICommandAsync
     {
-        private Action<object> action;
+        private Func<object, Task> action;
         private Predicate<object> predicate;
 
-        public CustomCommand(Action<object> action, Predicate<object> predicate)
+        public CustomCommandAsync(Func<object, Task> execute, Predicate<object> canExecute) 
         {
-            this.action = action;
-            this.predicate = predicate;
+            action = execute;
+            predicate = canExecute;
         }
-        public CustomCommand(Action<object> action) : this(action, p => true)
+        public CustomCommandAsync(Func<object, Task> execute) : this(execute, null)
         {
         }
 
@@ -32,9 +33,14 @@ namespace FilmInfo.Utility
             return predicate != null ? predicate(parameter) : true;
         }
 
-        public virtual void Execute(object parameter)
+        public async void Execute(object parameter)
         {
-            action(parameter);
+            await ExecuteAsync(parameter);
+        }
+
+        public async Task ExecuteAsync(object parameter)
+        {
+            await action(parameter);
         }
     }
 }

@@ -14,15 +14,18 @@ using System.Windows.Data;
 using System.Windows.Threading;
 using System.Threading;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace FilmInfo.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        public CustomCommand ScanDirectoryCommand { get; set; }
-        public CustomCommand GetPosterCommand { get; set; }
-        public CustomCommand GetDetailFromTMDbCommand { get; set; }
-        public CustomCommand OpenDetailViewCommand { get; set; }
+        public ICommand ScanDirectoryCommand { get; set; }
+        public ICommand GetPosterCommand { get; set; }
+        public ICommand GetDetailFromTMDbCommand { get; set; }
+        public ICommand GetMissingDetailFromTMDbCommand { get; set; }
+        public ICommand GetAllDetailFromTMDbCommand { get; set; }
+        public ICommand OpenDetailViewCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         private DataService dataService;
         private DialogService dialogService;
@@ -179,9 +182,12 @@ namespace FilmInfo.ViewModels
         {
             ScanDirectoryCommand = new CustomCommand(ScanDirectoryAsync);
             GetPosterCommand = new CustomCommand(GetPoster);
-            GetDetailFromTMDbCommand = new CustomCommand(GetDetailFromTMDb);
+            GetDetailFromTMDbCommand = new CustomCommandAsync(GetDetailFromTMDbAsync);
+            GetMissingDetailFromTMDbCommand = new CustomCommandAsync(GetAllDetailFromTMDbAsync);
+            GetAllDetailFromTMDbCommand = new CustomCommandAsync(GetAllDetailFromTMDbAsync);
             OpenDetailViewCommand = new CustomCommand(OpenDetailView);
         }
+
 
         private async void ScanDirectoryAsync(object obj)
         {
@@ -194,15 +200,30 @@ namespace FilmInfo.ViewModels
             throw new NotImplementedException("Get Poster noch nicht implementiert!");
         }
 
-        private void GetDetailFromTMDb(object obj)
+        private async Task GetDetailFromTMDbAsync(object obj)
         {
             var movie = obj as Movie;
             if (movie != null)
             {
-                var movieFromTMDb = dataService.GetDetailsFromTMDb(movie as Movie);
+                var movieFromTMDb = await dataService.GetDetailsFromTMDbAsync(movie as Movie);
                 dataService.UpdateMovie(movie, movieFromTMDb);
                 RefreshMovieList();
             }
+        }
+
+        private async Task GetMissingDetailFromTMDbAsync(object arg)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task GetAllDetailFromTMDbAsync(object arg)
+        {
+            foreach (var movie in Movies)
+            {
+                var movieFromTMDb = await dataService.GetDetailsFromTMDbAsync(movie as Movie);
+                dataService.UpdateMovie(movie, movieFromTMDb);
+            }
+            RefreshMovieList();
         }
 
         private void OpenDetailView(object obj)

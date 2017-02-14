@@ -56,14 +56,15 @@ namespace FilmInfo.Services
             return filmRepository.GetProcessedMovies(sortType, sortOrder, filter).ToObservableCollection();
         }
 
-        public Movie GetDetailsFromTMDb(Movie movie)
+        public async Task<Movie> GetDetailsFromTMDbAsync(Movie movie)
         {
             try
             {
-                var tmdbSearchResult = tmdbWrapper.SearchMovie(movie);
+                var tmdbSearchResult = await tmdbWrapper.SearchMovieAsync(movie);
 
                 //TODO: Fill Details into movie
                 movie.Poster = tmdbWrapper.GetPosterFromTMDb(tmdbSearchResult.PosterPath, "w500");
+                movie.Description = tmdbSearchResult.Overview;
 
                 return movie;
             }

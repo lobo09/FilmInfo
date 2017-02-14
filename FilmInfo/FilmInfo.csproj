@@ -120,6 +120,7 @@
     </Compile>
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\SortOptionToBoolConverter.cs" />
+    <Compile Include="Interfaces\ICommandAsync.cs" />
     <Compile Include="Model\FileOperations.cs" />
     <Compile Include="Model\Movie.cs" />
     <Compile Include="Model\FilmRepository.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Utility\CustomCommand.cs" />
     <Compile Include="Extensions\EnumBindingSourceExtension.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
+    <Compile Include="Utility\CustomCommandAsync.cs" />
     <Compile Include="Utility\Messenger.cs" />
     <Compile Include="Exceptions\MovieNotFoundException.cs" />
     <Compile Include="Utility\ProgressEventArgs.cs" />
@@ -185,7 +187,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interfaces\" />
     <Folder Include="SampleData\SampleDataSource\SampleDataSource_Files\" />
   </ItemGroup>
   <ItemGroup>

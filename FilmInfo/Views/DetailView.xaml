@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FilmInfo.Views"
         x:Class="FilmInfo.Views.DetailView"
         mc:Ignorable="d"
-        Title="DetailView" Height="800" Width="1000"
+        Title="DetailView" Height="700" Width="800"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
 
@@ -30,13 +30,19 @@
                     <DropShadowEffect ShadowDepth="15" BlurRadius="30" Direction="315"/>
                 </Image.Effect>
             </Image>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-
-            </Grid>
+            <GroupBox Header="Info:" Grid.Column="1" Margin="10" FontWeight="DemiBold">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                </Grid>
+            </GroupBox>
         </Grid>
+        <GroupBox Grid.Row="2" Header="Zusammenfassung:" Margin="10" FontWeight="DemiBold">
+            <ScrollViewer  VerticalScrollBarVisibility="Auto">
+                <TextBlock  Margin="20" Text="{Binding SelectedMovie.Description}" FontWeight="Normal" FontSize="13" TextWrapping="WrapWithOverflow" />
+            </ScrollViewer>
+        </GroupBox>
     </Grid>
 </Window>

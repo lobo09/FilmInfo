@@ -10,6 +10,7 @@ using TMDbLib.Objects.General;
 using TMDbLib.Objects.Search;
 using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
+using FilmInfo.Services;
 
 namespace FilmInfo.Model
 {
@@ -17,13 +18,19 @@ namespace FilmInfo.Model
     {
         private TMDbClient tmdbClient = new TMDbClient("d64071ba861f30df005b0c9e0ff9b67e");
 
-        public SearchMovie SearchMovie(Movie movie)
+        public async Task<SearchMovie> SearchMovieAsync(Movie movie)
         {
             var movieTitle = movie.Name;
             var movieYear = movie.Year;
 
-            SearchContainer<SearchMovie> movies = tmdbClient.SearchMovieAsync(movieTitle, "de", 0, true, movieYear).Result;
+            SearchContainer<SearchMovie> movies = await tmdbClient.SearchMovieAsync(movieTitle, "de", 0, true, movieYear).ConfigureAwait(false);
 
+
+            if (movies.TotalResults == 0)
+            {
+                movies = await tmdbClient.SearchMovieAsync(movieTitle, "de", 0, true, movieYear + 1).ConfigureAwait(false);
+                movies = await tmdbClient.SearchMovieAsync(movieTitle, "de", 0, true, movieYear + 1).ConfigureAwait(false);
+            }
 
             if (movies.TotalResults == 0)
             {
@@ -34,19 +41,33 @@ namespace FilmInfo.Model
                 var exactMatchList = new List<SearchMovie>();
                 foreach (var item in movies.Results)
                 {
-                    var itemTitle = Regex.Replace(item.Title, ":", "");
+                    var title = Regex.Replace(movie.Name, "[^a-zA-Z0-9]", "");
+                    var itemTitle = Regex.Replace(item.Title, "[^a-zA-Z0-9]", "");
                     var itemYear = item.ReleaseDate.Value.Year;
 
-                    if (itemTitle.Equals(movieTitle, StringComparison.OrdinalIgnoreCase)
-                        && itemYear == movieYear)
+                    if (itemTitle.Equals(title, StringComparison.OrdinalIgnoreCase))
                     {
-                        exactMatchList.Add(item);
+                        if (itemYear == movie.Year || itemYear + 1 == movie.Year || itemYear - 1 == movie.Year)
+                            exactMatchList.Add(item);
                     }
                 }
+
                 if (exactMatchList.Count == 1)
+                {
                     return exactMatchList.First();
+                }
+                else if (exactMatchList.Count >= 1)
+                {
+                    return exactMatchList.OrderByDescending(m => m.Popularity).FirstOrDefault();
+                }
+                else if (movies.TotalResults == 1)
+                {
+                    return movies.Results.FirstOrDefault();
+                }
                 else
-                    return ChooseMovie(movies);
+                {
+                    throw new MovieNotFoundException(movie);
+                }
             }
         }
 
@@ -55,11 +76,5 @@ namespace FilmInfo.Model
             var uri = new Uri("https://image.tmdb.org/t/p/" + resolution + posterPath);
             return new BitmapImage(uri);
         }
-
-        private SearchMovie ChooseMovie(SearchContainer<SearchMovie> movies)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

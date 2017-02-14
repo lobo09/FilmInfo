@@ -98,8 +98,10 @@
                                     <ContextMenu>
                                         <MenuItem Header="{Binding Name, Mode=OneWay}" FontWeight="Bold" IsEnabled="False" FontSize="9"/>
                                         <Separator/>
-                                        <MenuItem Header="Get Poster" Command="{Binding MainViewModel.GetPosterCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}" />
-                                        <MenuItem Header="Get Details from TMDb" Command="{Binding MainViewModel.GetDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
+                                        <MenuItem Header="get poster" Command="{Binding MainViewModel.GetPosterCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}" />
+                                        <MenuItem Header="get details from TMDb" Command="{Binding MainViewModel.GetDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
+                                        <MenuItem Header="get missing details from TMDb" Command="{Binding MainViewModel.GetMissingDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
+                                        <MenuItem Header="get all details from TMDb" Command="{Binding MainViewModel.GetAllDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
                                         <Separator/>
                                         <MenuItem  Header="Open Details..." Command="{Binding MainViewModel.OpenDetailViewCommand ,Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
                                     </ContextMenu>
