@@ -1,5 +1,6 @@
 ﻿using FilmInfo.Properties;
 using FilmInfo.Utility;
+using FilmInfo.Utility.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace FilmInfo.Model
             return FilmDatabase.Count != 0 ? true : false;
         }
 
-        public List<Movie> GetProcessedMovies(string sortType, SortOrderEnum sortOrder, string filter)
+        public List<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filter)
         {
             var processedMovieList = FilmDatabase;
 
@@ -89,26 +90,26 @@ namespace FilmInfo.Model
             return movieList;
         }
 
-        private List<Movie> SortMovies(List<Movie> movieList, string sortType, SortOrderEnum sortOrder)
+        private List<Movie> SortMovies(List<Movie> movieList, string sortType, SortOrder sortOrder)
         {
             switch (sortType)
             {
                 case "name":
-                    if (sortOrder == SortOrderEnum.Aufsteigend)
+                    if (sortOrder == SortOrder.Aufsteigend)
                         movieList = movieList.OrderBy(m => m.Name).ToList();
                     else
                         movieList = movieList.OrderByDescending(m => m.Name).ToList();
                     break;
 
                 case "year":
-                    if (sortOrder == SortOrderEnum.Aufsteigend)
+                    if (sortOrder == SortOrder.Aufsteigend)
                         movieList = movieList.OrderBy(m => m.Year).ToList();
                     else
                         movieList = movieList.OrderByDescending(m => m.Year).ToList();
                     break;
 
                 case "newest":
-                    if (sortOrder == SortOrderEnum.Aufsteigend)
+                    if (sortOrder == SortOrder.Aufsteigend)
                         movieList = movieList.OrderBy(m => m.MkvCreationTime).ToList();
                     else
                         movieList = movieList.OrderByDescending(m => m.MkvCreationTime).ToList();

@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using TMDbLib.Objects.Search;
 using System.Windows.Media.Imaging;
+using FilmInfo.Utility.Enums;
+using FilmInfo.Extensions;
 
 namespace FilmInfo.Services
 {
@@ -51,7 +53,7 @@ namespace FilmInfo.Services
                 return false;
         }
 
-        public ObservableCollection<Movie> GetProcessedMovies(string sortType, SortOrderEnum sortOrder, string filter)
+        public ObservableCollection<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filter)
         {
             return filmRepository.GetProcessedMovies(sortType, sortOrder, filter).ToObservableCollection();
         }

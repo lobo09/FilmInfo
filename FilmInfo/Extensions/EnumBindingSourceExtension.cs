@@ -5,47 +5,61 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 
-namespace FilmInfo.Utility
+namespace FilmInfo.Extensions
+
 {
     public class EnumBindingSourceExtension : MarkupExtension
     {
-        private Type _enumType;
-        public Type EnumType
+        private Type enumType;
+
+        public EnumBindingSourceExtension()
         {
-            get { return this._enumType; }
-            set
-            {
-                if (value != this._enumType)
-                {
-                    if (null != value)
-                    {
-                        Type enumType = Nullable.GetUnderlyingType(value) ?? value;
-                        if (!enumType.IsEnum)
-                            throw new ArgumentException("Type must be for an Enum.");
-                    }
-
-                    this._enumType = value;
-                }
-            }
         }
-
-        public EnumBindingSourceExtension() { }
 
         public EnumBindingSourceExtension(Type enumType)
         {
             this.EnumType = enumType;
         }
 
+        public Type EnumType
+        {
+            get
+            {
+                return this.enumType;
+            }
+
+            set
+            {
+                if (value != this.enumType)
+                {
+                    if (null != value)
+                    {
+                        Type enumType = Nullable.GetUnderlyingType(value) ?? value;
+                        if (!enumType.IsEnum)
+                        {
+                            throw new ArgumentException("Type must be for an Enum.");
+                        }
+                    }
+
+                    this.enumType = value;
+                }
+            }
+        }
+
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            if (null == this._enumType)
+            if (null == this.enumType)
+            {
                 throw new InvalidOperationException("The EnumType must be specified.");
+            }
 
-            Type actualEnumType = Nullable.GetUnderlyingType(this._enumType) ?? this._enumType;
+            Type actualEnumType = Nullable.GetUnderlyingType(this.enumType) ?? this.enumType;
             Array enumValues = Enum.GetValues(actualEnumType);
 
-            if (actualEnumType == this._enumType)
+            if (actualEnumType == this.enumType)
+            {
                 return enumValues;
+            }
 
             Array tempArray = Array.CreateInstance(actualEnumType, enumValues.Length + 1);
             enumValues.CopyTo(tempArray, 1);

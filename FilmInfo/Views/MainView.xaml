@@ -4,9 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FilmInfo.Views"
-        xmlns:utility="clr-namespace:FilmInfo.Utility"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+        xmlns:enums="clr-namespace:FilmInfo.Utility.Enums"
+        xmlns:extensions="clr-namespace:FilmInfo.Extensions"
         xmlns:ViewModels="clr-namespace:FilmInfo.ViewModels" 
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
         xmlns:pi="http://schemas.microsoft.com/prototyping/2010/interactivity" 
         x:Class="FilmInfo.Views.MainView" 
         mc:Ignorable="d"
@@ -64,7 +65,7 @@
                 <!--<Label Content="Sortierung:" FontSize="15" Margin="2,10,0,0" FontWeight="Bold"/>-->
                 <GroupBox Header="Sortierung:" Margin="5,5,5,5" FontSize="15" FontWeight="Bold" BorderBrush="DarkGray">
                     <StackPanel>
-                        <ComboBox Margin="5" FontSize="12" FontWeight="Normal" ItemsSource="{Binding Source={utility:EnumBindingSource {x:Type utility:SortOrderEnum}}}" SelectedItem="{Binding SortOrder}"/>
+                        <ComboBox Margin="5" FontSize="12" FontWeight="Normal" ItemsSource="{Binding Source={extensions:EnumBindingSource {x:Type enums:SortOrder}}}" SelectedItem="{Binding SortOrder}"/>
                         <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Name" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=name, Converter={StaticResource SortOptionToBoolConverter}}"/>
                         <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Jahr" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=year, Converter={StaticResource SortOptionToBoolConverter}}"/>
                         <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Hinzugefügt" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=newest, Converter={StaticResource SortOptionToBoolConverter}}"/>

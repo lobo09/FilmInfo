@@ -15,6 +15,7 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Input;
+using FilmInfo.Utility.Enums;
 
 namespace FilmInfo.ViewModels
 {
@@ -131,8 +132,8 @@ namespace FilmInfo.ViewModels
             }
         }
 
-        private SortOrderEnum sortOrder;
-        public SortOrderEnum SortOrder
+        private SortOrder sortOrder;
+        public SortOrder SortOrder
         {
             get { return sortOrder; }
             set

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FilmInfo.Utility
+namespace FilmInfo.Utility.Enums
 {
-    public enum SortOrderEnum
+    public enum MatchCriteria
     {
-        Aufsteigend,
-        Abfallend,
+        Short,
+        Long
     }
 }

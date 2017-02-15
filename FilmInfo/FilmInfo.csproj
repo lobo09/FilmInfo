@@ -131,10 +131,11 @@
     <Compile Include="Extensions\EnumBindingSourceExtension.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Utility\CustomCommandAsync.cs" />
+    <Compile Include="Utility\Enums\MatchCriteria.cs" />
+    <Compile Include="Utility\Enums\SortOrderEnum.cs" />
     <Compile Include="Utility\Messenger.cs" />
     <Compile Include="Exceptions\MovieNotFoundException.cs" />
     <Compile Include="Utility\ProgressEventArgs.cs" />
-    <Compile Include="Utility\SortOrderEnum.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\DetailViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
