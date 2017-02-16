@@ -12,6 +12,7 @@ using TMDbLib.Objects.Search;
 using System.Windows.Media.Imaging;
 using FilmInfo.Utility.Enums;
 using FilmInfo.Extensions;
+using System.IO;
 
 namespace FilmInfo.Services
 {
@@ -26,31 +27,14 @@ namespace FilmInfo.Services
             tmdbWrapper = new TMDbWrapper();
         }
 
-        public void RegisterScanProgressStarted(EventHandler<ProgressEventArgs> processEventHandler)
+        public string GetNewRootDirectory()
         {
-            filmRepository.ScanProgressStarted += processEventHandler;
+            return FileOperations.GetDirectory();
         }
 
-        public void RegisterScanProgressChanged(EventHandler<ProgressEventArgs> processEventHandler)
+        public async Task<bool> ScanAllMoviesAsync(IProgress<int> progress, string directory)
         {
-            filmRepository.ScanProgressChanged += processEventHandler;
-        }
-
-        public void RegisterScanProgressCompleted(EventHandler<ProgressEventArgs> processEventHandler)
-        {
-            filmRepository.ScanProgressCompleted += processEventHandler;
-        }
-
-        public async Task<bool> ScanAllMoviesAsync()
-        {
-            string rootDirectory = FileOperations.GetDirectory();
-            if (rootDirectory != null)
-            {
-                var result = await filmRepository.ScanAllMovies(rootDirectory);
-                return result;
-            }
-            else
-                return false;
+            return await filmRepository.ScanAllMovies(directory, progress);
         }
 
         public ObservableCollection<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filter)

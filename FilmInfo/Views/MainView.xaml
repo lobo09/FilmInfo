@@ -61,8 +61,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Background="#FFF0F0F0" IsEnabled="{Binding MoviesProcessed}">
-                <!--<Label Content="Sortierung:" FontSize="15" Margin="2,10,0,0" FontWeight="Bold"/>-->
+            <StackPanel Background="#FFF0F0F0" IsEnabled="{Binding EnableSidePanel}">
                 <GroupBox Header="Sortierung:" Margin="5,5,5,5" FontSize="15" FontWeight="Bold" BorderBrush="DarkGray">
                     <StackPanel>
                         <ComboBox Margin="5" FontSize="12" FontWeight="Normal" ItemsSource="{Binding Source={extensions:EnumBindingSource {x:Type enums:SortOrder}}}" SelectedItem="{Binding SortOrder}"/>
@@ -119,10 +118,9 @@
                     </ListBox.ItemsPanel>
                 </ListBox>
 
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.RowSpan="2" Visibility="{Binding ScanActive, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <Image Source="{Binding Source={StaticResource ScanningBitmap}}" Width="350" Margin="10"/>
+                <Grid Visibility="{Binding ProgressbarVisibility}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2" Background="#F0FFFFFF">
                     <ProgressBar  Height="25" Width="300"  Value="{Binding ScanProgress}"/>
-                </StackPanel>
+                </Grid>
 
             </Grid>
 

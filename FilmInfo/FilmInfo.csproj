@@ -135,7 +135,6 @@
     <Compile Include="Utility\Enums\SortOrderEnum.cs" />
     <Compile Include="Utility\Messenger.cs" />
     <Compile Include="Exceptions\MovieNotFoundException.cs" />
-    <Compile Include="Utility\ProgressEventArgs.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\DetailViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

@@ -13,18 +13,24 @@ namespace FilmInfo.Model
     {
         public static string GetDirectory()
         {
-            var dlg = new CommonOpenFileDialog();
-            dlg.Title = "Choose root Folder...";
-            dlg.IsFolderPicker = true;
-            dlg.AddToMostRecentlyUsedList = false;
-            dlg.AllowNonFileSystemItems = false;
-            dlg.EnsureFileExists = true;
-            dlg.EnsurePathExists = true;
-            dlg.EnsureReadOnly = false;
-            dlg.EnsureValidNames = true;
-            dlg.Multiselect = false;
-            dlg.ShowPlacesList = true;
-            return dlg.ShowDialog() == CommonFileDialogResult.Ok ? dlg.FileName : null;
+            using (var dlg = new CommonOpenFileDialog())
+            {
+                dlg.Title = "Choose root Folder...";
+                dlg.IsFolderPicker = true;
+                dlg.AddToMostRecentlyUsedList = false;
+                dlg.AllowNonFileSystemItems = false;
+                dlg.EnsureFileExists = true;
+                dlg.EnsurePathExists = true;
+                dlg.EnsureReadOnly = false;
+                dlg.EnsureValidNames = true;
+                dlg.Multiselect = false;
+                dlg.ShowPlacesList = true;
+                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    return dlg.FileName;
+                }
+            }
+            throw new DirectoryNotFoundException();
         }
 
         public static BitmapImage LoadBitmapImage(string path)

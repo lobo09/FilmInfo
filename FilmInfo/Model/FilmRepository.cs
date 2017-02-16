@@ -21,19 +21,14 @@ namespace FilmInfo.Model
     {
         public List<Movie> FilmDatabase { get; set; }
         public string RootDirectory { get; private set; }
-        public event EventHandler<ProgressEventArgs> ScanProgressStarted;
-        public event EventHandler<ProgressEventArgs> ScanProgressChanged;
-        public event EventHandler<ProgressEventArgs> ScanProgressCompleted;
 
         public FilmRepository()
         {
             FilmDatabase = new List<Movie>();
         }
 
-        public async Task<bool> ScanAllMovies(string rootDirectory)
+        public async Task<bool> ScanAllMovies(string rootDirectory, IProgress<int> progress)
         {
-            ScanProgressStarted(this, new ProgressEventArgs());
-
             await Task.Run(() =>
                 {
                     FilmDatabase.Clear();
@@ -47,12 +42,10 @@ namespace FilmInfo.Model
                         var movie = SetAllFilesInMovie(directory);
                         movie = SetAllFieldsInMovie(directory, movie);
                         FilmDatabase.Add(movie);
-                        ScanProgressChanged(this, new ProgressEventArgs(actualDir++, maxDir));
+                        progress.Report(actualDir++ * 100 / maxDir);
                     }
                     FilmDatabase.RemoveAll(m => m.MkvFile == null);
                 });
-
-            ScanProgressCompleted(this, new ProgressEventArgs());
 
             return FilmDatabase.Count != 0 ? true : false;
         }

@@ -21,18 +21,41 @@ namespace FilmInfo.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        #region Fields
+        public event PropertyChangedEventHandler PropertyChanged;
+        private int scanProgress;
+        private Movie selectedMovie;
+        private string movieCountLabel;
+        private IProgress<int> progressBar;
+        private DataService dataService;
+        private DialogService dialogService;
+        private ObservableCollection<Movie> movies;
+        private bool enableSidePanel;
+        private string filter;
+        private string sortOption;
+        private SortOrder sortOrder;
+        #endregion
+
+        public MainViewModel()
+        {
+            LoadCommands();
+            Movies = new ObservableCollection<Movie>();
+            progressBar = new Progress<int>(OnProgressChanged);
+            dataService = new DataService();
+            dialogService = new DialogService();
+            SortOption = "name";
+            ProgressbarVisibility = Visibility.Collapsed;
+        }
+
+        #region Properties
         public ICommand ScanDirectoryCommand { get; set; }
+        //TODO: GetPoster entfernen
         public ICommand GetPosterCommand { get; set; }
         public ICommand GetDetailFromTMDbCommand { get; set; }
         public ICommand GetMissingDetailFromTMDbCommand { get; set; }
         public ICommand GetAllDetailFromTMDbCommand { get; set; }
         public ICommand OpenDetailViewCommand { get; set; }
-        public event PropertyChangedEventHandler PropertyChanged;
-        private DataService dataService;
-        private DialogService dialogService;
 
-        #region Properties
-        private int scanProgress;
         public int ScanProgress
         {
             get { return scanProgress; }
@@ -43,19 +66,17 @@ namespace FilmInfo.ViewModels
             }
         }
 
-        private bool scanActive;
-        public bool ScanActive
+        private Visibility progressbarVisibility;
+        public Visibility ProgressbarVisibility
         {
-            get { return scanActive; }
+            get { return progressbarVisibility; }
             set
             {
-                scanActive = value;
-                RaisePropertyChanged("ScanActive");
+                progressbarVisibility = value;
+                RaisePropertyChanged("ProgressbarVisibility");
             }
         }
 
-
-        private Movie selectedMovie;
         public Movie SelectedMovie
         {
             get
@@ -69,7 +90,6 @@ namespace FilmInfo.ViewModels
             }
         }
 
-        private string movieCountLabel;
         public string MovieCountLabel
         {
             get { return movieCountLabel; }
@@ -80,8 +100,6 @@ namespace FilmInfo.ViewModels
             }
         }
 
-
-        private ObservableCollection<Movie> movies;
         public ObservableCollection<Movie> Movies
         {
             get
@@ -96,19 +114,16 @@ namespace FilmInfo.ViewModels
             }
         }
 
-        private bool moviesProcessed;
-        public bool MoviesProcessed
+        public bool EnableSidePanel
         {
-            get { return moviesProcessed; }
+            get { return enableSidePanel; }
             set
             {
-                moviesProcessed = value;
-                RaisePropertyChanged("MoviesProcessed");
+                enableSidePanel = value;
+                RaisePropertyChanged("EnableSidePanel");
             }
         }
 
-
-        private string filter;
         public string Filter
         {
             get { return filter; }
@@ -120,7 +135,6 @@ namespace FilmInfo.ViewModels
             }
         }
 
-        private string sortOption;
         public string SortOption
         {
             get { return sortOption; }
@@ -132,7 +146,6 @@ namespace FilmInfo.ViewModels
             }
         }
 
-        private SortOrder sortOrder;
         public SortOrder SortOrder
         {
             get { return sortOrder; }
@@ -145,46 +158,13 @@ namespace FilmInfo.ViewModels
         }
         #endregion
 
-        public MainViewModel()
-        {
-            Movies = new ObservableCollection<Movie>();
-            LoadCommands();
-            dataService = new DataService();
-            dialogService = new DialogService();
-            dataService.RegisterScanProgressStarted(OnScanProgressStarted);
-            dataService.RegisterScanProgressChanged(OnScanProgressChanged);
-            dataService.RegisterScanProgressCompleted(OnScanProgressCompleted);
-            SortOption = "name";
-        }
-
-        #region Eventhandler
-        private void OnScanProgressStarted(object o, ProgressEventArgs e)
-        {
-            MoviesProcessed = false;
-            Movies.Clear();
-            ScanActive = true;
-        }
-
-        private void OnScanProgressChanged(object o, ProgressEventArgs e)
-        {
-            ScanProgress = (int)e.PercentFinished;
-        }
-
-        private void OnScanProgressCompleted(object o, ProgressEventArgs e)
-        {
-            ScanActive = false;
-            RefreshMovieList();
-            MoviesProcessed = true;
-        }
-        #endregion
-
         #region Commands
         private void LoadCommands()
         {
             ScanDirectoryCommand = new CustomCommand(ScanDirectoryAsync);
             GetPosterCommand = new CustomCommand(GetPoster);
             GetDetailFromTMDbCommand = new CustomCommandAsync(GetDetailFromTMDbAsync);
-            GetMissingDetailFromTMDbCommand = new CustomCommandAsync(GetAllDetailFromTMDbAsync);
+            GetMissingDetailFromTMDbCommand = new CustomCommandAsync(GetMissingDetailFromTMDbAsync);
             GetAllDetailFromTMDbCommand = new CustomCommandAsync(GetAllDetailFromTMDbAsync);
             OpenDetailViewCommand = new CustomCommand(OpenDetailView);
         }
@@ -192,7 +172,20 @@ namespace FilmInfo.ViewModels
 
         private async void ScanDirectoryAsync(object obj)
         {
-            await dataService.ScanAllMoviesAsync();
+            try
+            {
+                var rootDirectory = dataService.GetNewRootDirectory();
+                ProgressbarVisibility = Visibility.Visible;
+                EnableSidePanel = false;
+                await dataService.ScanAllMoviesAsync(progressBar, rootDirectory);
+                RefreshMovieList();
+                ProgressbarVisibility = Visibility.Collapsed;
+                EnableSidePanel = true;
+            }
+            catch (DirectoryNotFoundException)
+            {
+
+            }
         }
 
         private void GetPoster(object obj)
@@ -206,6 +199,7 @@ namespace FilmInfo.ViewModels
             var movie = obj as Movie;
             if (movie != null)
             {
+                //TODO: Scanbar im Bild anzeigen
                 var movieFromTMDb = await dataService.GetDetailsFromTMDbAsync(movie as Movie);
                 dataService.UpdateMovie(movie, movieFromTMDb);
                 RefreshMovieList();
@@ -214,17 +208,33 @@ namespace FilmInfo.ViewModels
 
         private async Task GetMissingDetailFromTMDbAsync(object arg)
         {
-            throw new NotImplementedException();
+            ScanProgress = 0;
+            var movieCount = 0;
+            ProgressbarVisibility = Visibility.Visible;
+            var MoviesWithMissingDetails = Movies.Where(m => m.NfoFile == null || m.PosterFile == "NoImage.jpg" || m.PosterFile == null).ToList();
+            foreach (var movie in MoviesWithMissingDetails)
+            {
+                var movieFromTMDb = await dataService.GetDetailsFromTMDbAsync(movie as Movie);
+                dataService.UpdateMovie(movie, movieFromTMDb);
+                ScanProgress = movieCount++ * 100 / MoviesWithMissingDetails.Count;
+            }
+            RefreshMovieList();
+            ProgressbarVisibility = Visibility.Collapsed;
         }
 
         private async Task GetAllDetailFromTMDbAsync(object arg)
         {
+            ScanProgress = 0;
+            var movieCount = 0;
+            ProgressbarVisibility = Visibility.Visible;
             foreach (var movie in Movies)
             {
                 var movieFromTMDb = await dataService.GetDetailsFromTMDbAsync(movie as Movie);
                 dataService.UpdateMovie(movie, movieFromTMDb);
+                ScanProgress = movieCount++ * 100 / Movies.Count;
             }
             RefreshMovieList();
+            ProgressbarVisibility = Visibility.Collapsed;
         }
 
         private void OpenDetailView(object obj)
@@ -233,6 +243,11 @@ namespace FilmInfo.ViewModels
             dialogService.OpenDetailView();
         }
         #endregion
+
+        private void OnProgressChanged(int progress)
+        {
+            ScanProgress = progress;
+        }
 
         private void RefreshMovieList()
         {
