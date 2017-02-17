@@ -17,11 +17,23 @@
     <Window.Resources>
         <DataTemplate x:Key="ItemTemplate">
             <Grid Height="525" Width="375">
+                <Grid.InputBindings>
+                    <MouseBinding Command="{Binding MainViewModel.SelectCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}" Gesture="LeftDoubleClick"/>
+                </Grid.InputBindings>
                 <Grid.LayoutTransform>
                     <ScaleTransform x:Name="scaleTrans" CenterX="0" CenterY="0" ScaleX="{Binding Value, ElementName=uiScaleSlider}" ScaleY="{Binding Value, ElementName=uiScaleSlider}"/>
                 </Grid.LayoutTransform>
-                <Image Source="{Binding Poster}" Margin="5"/>
-                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" MaxWidth="250" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#BFFFFFFF" />
+                <Rectangle RadiusX="25" RadiusY="25">
+                    <Rectangle.Fill>
+                        <ImageBrush ImageSource="{Binding Poster}"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Grid Visibility="{Binding isSelected}">
+                    <Rectangle RadiusX="25" RadiusY="25" Fill="#D0000000"/>
+                    <Image Source="{DynamicResource isSelectedBitmap}" Width="200"/>
+                    <Border CornerRadius="25" BorderBrush="Black" BorderThickness="6"/>
+                </Grid>
+                <!--<TextBlock Text="{Binding Name}" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" MaxWidth="250" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#BFFFFFFF" />-->
             </Grid>
         </DataTemplate>
     </Window.Resources>
@@ -32,8 +44,8 @@
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="scan folder..." Command="{Binding ScanDirectoryCommand}"/>
+            <MenuItem Header="Datei">
+                <MenuItem Header="Verzeichnis scannen..." Command="{Binding ScanDirectoryCommand}"/>
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom" FontWeight="Bold" >
@@ -51,7 +63,7 @@
                 <Label Content="{Binding MovieCountLabel}"/>
             </StatusBarItem>
             <StatusBarItem Grid.Column="1" Margin="0,0,20,0">
-                <Slider x:Name="uiScaleSlider" Width="200" Minimum="0.2" Maximum="2" Value="1" />
+                <Slider x:Name="uiScaleSlider" Width="300" Minimum="0.2" Maximum="2" Value="1"/>
             </StatusBarItem>
         </StatusBar>
         <Grid>
@@ -88,22 +100,29 @@
                 <TextBlock HorizontalAlignment="Center" FontSize="28" Margin="5" FontWeight="Bold" Text="{Binding SelectedMovie.Name}"/>
 
                 <ListBox Grid.Row="1" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                         ItemTemplate="{Binding Source={StaticResource ResourceKey=ItemTemplate}}" 
+                         ItemTemplate="{Binding Source={StaticResource ResourceKey=ItemTemplate}}"
                          ItemsSource="{Binding Movies}" SelectedItem="{Binding SelectedMovie}">
+
 
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="{x:Type ListBoxItem}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="IsSelected" Value="True"/>
+                                </Trigger>
+                            </Style.Triggers>
+                            <Setter Property="Padding" Value="2"/>
+                            <Setter Property="BorderThickness" Value="0"/>
                             <Setter Property="ContextMenu">
                                 <Setter.Value>
                                     <ContextMenu>
                                         <MenuItem Header="{Binding Name, Mode=OneWay}" FontWeight="Bold" IsEnabled="False" FontSize="9"/>
                                         <Separator/>
-                                        <MenuItem Header="get poster" Command="{Binding MainViewModel.GetPosterCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}" />
-                                        <MenuItem Header="get details from TMDb" Command="{Binding MainViewModel.GetDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
-                                        <MenuItem Header="get missing details from TMDb" Command="{Binding MainViewModel.GetMissingDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
-                                        <MenuItem Header="get all details from TMDb" Command="{Binding MainViewModel.GetAllDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
+                                        <MenuItem Header="Infos abrufen (aktueller Film)" Command="{Binding MainViewModel.GetDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
+                                        <MenuItem Header="Infos abrufen (Filme ohne Infos)" Command="{Binding MainViewModel.GetMissingDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
+                                        <MenuItem Header="Infos abrufen (alle Filme)" Command="{Binding MainViewModel.GetAllDetailFromTMDbCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
                                         <Separator/>
-                                        <MenuItem  Header="Open Details..." Command="{Binding MainViewModel.OpenDetailViewCommand ,Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
+                                        <MenuItem  Header="Film Infos..." Command="{Binding MainViewModel.OpenDetailViewCommand ,Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding}"/>
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
@@ -113,7 +132,7 @@
 
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal"/>
+                            <WrapPanel Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>

@@ -5,7 +5,7 @@
              xmlns:converter="clr-namespace:FilmInfo.Converter"
              StartupUri="Views/MainView.xaml">
     <Application.Resources>
-        <BitmapImage x:Key="ScanningBitmap" UriSource="/Resources/Images/scanning.png"/>
+        <BitmapImage x:Key="isSelectedBitmap" UriSource="/Resources/Images/isSelected.png"/>
         <local:ViewModelLocator x:Key="ViewModelLocator"/>
         <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converter:SortOptionToBoolConverter x:Key="SortOptionToBoolConverter"/>

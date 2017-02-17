@@ -55,6 +55,7 @@ namespace FilmInfo.ViewModels
         public ICommand GetMissingDetailFromTMDbCommand { get; set; }
         public ICommand GetAllDetailFromTMDbCommand { get; set; }
         public ICommand OpenDetailViewCommand { get; set; }
+        public ICommand SelectCommand { get; set; }
 
         public int ScanProgress
         {
@@ -162,11 +163,11 @@ namespace FilmInfo.ViewModels
         private void LoadCommands()
         {
             ScanDirectoryCommand = new CustomCommand(ScanDirectoryAsync);
-            GetPosterCommand = new CustomCommand(GetPoster);
             GetDetailFromTMDbCommand = new CustomCommandAsync(GetDetailFromTMDbAsync);
             GetMissingDetailFromTMDbCommand = new CustomCommandAsync(GetMissingDetailFromTMDbAsync);
             GetAllDetailFromTMDbCommand = new CustomCommandAsync(GetAllDetailFromTMDbAsync);
             OpenDetailViewCommand = new CustomCommand(OpenDetailView);
+            SelectCommand = new CustomCommand(OnSelect);
         }
 
 
@@ -186,12 +187,6 @@ namespace FilmInfo.ViewModels
             {
 
             }
-        }
-
-        private void GetPoster(object obj)
-        {
-            var movie = obj as Movie;
-            throw new NotImplementedException("Get Poster noch nicht implementiert!");
         }
 
         private async Task GetDetailFromTMDbAsync(object obj)
@@ -242,9 +237,16 @@ namespace FilmInfo.ViewModels
             Messenger.Default.Send<Movie>(SelectedMovie);
             dialogService.OpenDetailView();
         }
-        #endregion
 
-        private void OnProgressChanged(int progress)
+        private void OnSelect(object obj)
+        {
+            var movie = obj as Movie;
+            dataService.ChangeSelectionOnMovie(movie);
+            RefreshMovieList();
+        }
+            #endregion
+
+            private void OnProgressChanged(int progress)
         {
             ScanProgress = progress;
         }

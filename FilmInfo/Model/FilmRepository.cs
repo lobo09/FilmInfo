@@ -66,12 +66,26 @@ namespace FilmInfo.Model
             return processedMovieList;
         }
 
-        public void UpdateMovie(Movie movie, Movie movieFromTMDb)
+        public void ToggleSelectionOnMovie(Movie movie)
+        {
+            var selectedMovie = FilmDatabase.Where(m => m == movie).First();
+
+            if (selectedMovie.isSelected == Visibility.Collapsed)
+            {
+                selectedMovie.isSelected = Visibility.Visible;
+            }
+            else
+            {
+                selectedMovie.isSelected = Visibility.Collapsed;
+            }
+        }
+
+        public void UpdateMovie(Movie movie, Movie newMovie)
         {
             var index = FilmDatabase.IndexOf(movie);
             if (index != -1)
             {
-                FilmDatabase[index] = movieFromTMDb;
+                FilmDatabase[index] = newMovie;
             }
         }
 
@@ -159,6 +173,8 @@ namespace FilmInfo.Model
 
             if (movie.PosterFileFull != null)
                 movie.Poster = FileOperations.LoadBitmapImage(movie.PosterFileFull);
+
+            movie.isSelected = Visibility.Collapsed;
             return movie;
         }
 

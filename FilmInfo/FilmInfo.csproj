@@ -193,7 +193,7 @@
     <Resource Include="Resources\Images\NoImage.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\scanning.png" />
+    <Resource Include="Resources\Images\isSelected.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

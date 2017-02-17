@@ -62,9 +62,15 @@ namespace FilmInfo.Services
 
         }
 
-        public void UpdateMovie(Movie movie, Movie movieFromTMDb)
+        public void UpdateMovie(Movie movie, Movie newMovie)
         {
-            filmRepository.UpdateMovie(movie, movieFromTMDb);
+            filmRepository.UpdateMovie(movie, newMovie);
+        }
+
+        public void ChangeSelectionOnMovie(Movie movie)
+        {
+            filmRepository.ToggleSelectionOnMovie(movie);
+            
         }
     }
 }

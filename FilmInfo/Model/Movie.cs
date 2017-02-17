@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace FilmInfo.Model
@@ -15,6 +16,7 @@ namespace FilmInfo.Model
         public DateTime MkvCreationTime { get; set; }
         public BitmapImage Poster { get; set; }
         public string Description { get; set; }
+        public Visibility isSelected { get; set; }
         public string MkvFile { get; set; }
         public string MkvFileFull { get; set; }
         public string NfoFile { get; set; }
