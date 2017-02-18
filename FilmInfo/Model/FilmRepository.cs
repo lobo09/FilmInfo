@@ -1,4 +1,5 @@
-﻿using FilmInfo.Properties;
+﻿using FilmInfo.Exceptions;
+using FilmInfo.Properties;
 using FilmInfo.Utility;
 using FilmInfo.Utility.Enums;
 using System;
@@ -21,10 +22,12 @@ namespace FilmInfo.Model
     {
         public List<Movie> FilmDatabase { get; set; }
         public string RootDirectory { get; private set; }
+        private TMDbWrapper tmdbWrapper;
 
         public FilmRepository()
         {
             FilmDatabase = new List<Movie>();
+            tmdbWrapper = new TMDbWrapper();
         }
 
         public async Task<bool> ScanAllMovies(string rootDirectory, IProgress<int> progress)
@@ -48,6 +51,36 @@ namespace FilmInfo.Model
                 });
 
             return FilmDatabase.Count != 0 ? true : false;
+        }
+
+        public async Task GetDetailsFromTMDbAsync(Movie movie)
+        {
+            var index = FilmDatabase.IndexOf(movie);
+            if(index != -1)
+            {
+                var movieInDB = FilmDatabase[index];
+            try
+                {
+                    var tmdbSearchResult = await tmdbWrapper.SearchMovieAsync(movie);
+
+                    //TODO: Fill Details into movie
+                    movieInDB.Poster = tmdbWrapper.GetPosterFromTMDb(tmdbSearchResult.PosterPath, "w500");
+                    movieInDB.Description = tmdbSearchResult.Overview;
+                    movieInDB.ReleaseDate = tmdbSearchResult.ReleaseDate.Value;
+                    movieInDB.OriginalTitle = tmdbSearchResult.OriginalTitle;
+                    movieInDB.Runtime = tmdbSearchResult.Runtime.Value;
+                    movieInDB.Genres = new List<string>();
+                    foreach(var genre in tmdbSearchResult.Genres)
+                    {
+                        movieInDB.Genres.Add(genre.Name);
+                    }
+                    
+                }
+                catch (MovieNotFoundException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
 
         public List<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filter)

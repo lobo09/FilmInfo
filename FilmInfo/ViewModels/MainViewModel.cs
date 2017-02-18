@@ -195,8 +195,7 @@ namespace FilmInfo.ViewModels
             if (movie != null)
             {
                 //TODO: Scanbar im Bild anzeigen
-                var movieFromTMDb = await dataService.GetDetailsFromTMDbAsync(movie as Movie);
-                dataService.UpdateMovie(movie, movieFromTMDb);
+                await dataService.GetDetailsFromTMDbAsync(movie as Movie);
                 RefreshMovieList();
             }
         }
@@ -209,8 +208,7 @@ namespace FilmInfo.ViewModels
             var MoviesWithMissingDetails = Movies.Where(m => m.NfoFile == null || m.PosterFile == "NoImage.jpg" || m.PosterFile == null).ToList();
             foreach (var movie in MoviesWithMissingDetails)
             {
-                var movieFromTMDb = await dataService.GetDetailsFromTMDbAsync(movie as Movie);
-                dataService.UpdateMovie(movie, movieFromTMDb);
+                await dataService.GetDetailsFromTMDbAsync(movie as Movie);
                 ScanProgress = movieCount++ * 100 / MoviesWithMissingDetails.Count;
             }
             RefreshMovieList();
@@ -224,8 +222,7 @@ namespace FilmInfo.ViewModels
             ProgressbarVisibility = Visibility.Visible;
             foreach (var movie in Movies)
             {
-                var movieFromTMDb = await dataService.GetDetailsFromTMDbAsync(movie as Movie);
-                dataService.UpdateMovie(movie, movieFromTMDb);
+                await dataService.GetDetailsFromTMDbAsync(movie as Movie);
                 ScanProgress = movieCount++ * 100 / Movies.Count;
             }
             RefreshMovieList();

@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
 using FilmInfo.Services;
 using FilmInfo.Utility.Enums;
+using TMDbLib.Objects.Movies;
 
 namespace FilmInfo.Model
 {
@@ -21,14 +22,14 @@ namespace FilmInfo.Model
     {
         private TMDbClient tmdbClient = new TMDbClient("d64071ba861f30df005b0c9e0ff9b67e");
 
-        public async Task<SearchMovie> SearchMovieAsync(Movie movie)
+        public async Task<TMDbLib.Objects.Movies.Movie> SearchMovieAsync(Movie movie)
         {
             SearchContainer<SearchMovie> movieSearchContainer = await tmdbClient.SearchMovieAsync(movie.Name, "de", 0, true).ConfigureAwait(false);
 
-            SearchMovie bestMatch;
+            SearchMovie bestSearchMatch;
             if (movieSearchContainer.TotalResults != 0)
             {
-                bestMatch = FindBestMatch(movie, movieSearchContainer.Results);
+                bestSearchMatch = FindBestMatch(movie, movieSearchContainer.Results);
             }
             else
             {
@@ -55,13 +56,14 @@ namespace FilmInfo.Model
 
                 if (movieSearchContainer.TotalResults != 0)
                 {
-                    bestMatch = FindBestMatch(movie, movieSearchContainer.Results);
+                    bestSearchMatch = FindBestMatch(movie, movieSearchContainer.Results);
                 }
                 else
                 {
                     throw new MovieNotFoundException(movie);
                 }
             }
+            var bestMatch = await tmdbClient.GetMovieAsync(bestSearchMatch.Id,"de",MovieMethods.Undefined);
             return bestMatch;
         }
 

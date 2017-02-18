@@ -19,12 +19,10 @@ namespace FilmInfo.Services
     public class DataService
     {
         private FilmRepository filmRepository;
-        private TMDbWrapper tmdbWrapper;
 
         public DataService()
         {
             filmRepository = new FilmRepository();
-            tmdbWrapper = new TMDbWrapper();
         }
 
         public string GetNewRootDirectory()
@@ -42,29 +40,10 @@ namespace FilmInfo.Services
             return filmRepository.GetProcessedMovies(sortType, sortOrder, filter).ToObservableCollection();
         }
 
-        public async Task<Movie> GetDetailsFromTMDbAsync(Movie movie)
+        public async Task GetDetailsFromTMDbAsync(Movie movie)
         {
-            try
-            {
-                var tmdbSearchResult = await tmdbWrapper.SearchMovieAsync(movie);
-
-                //TODO: Fill Details into movie
-                movie.Poster = tmdbWrapper.GetPosterFromTMDb(tmdbSearchResult.PosterPath, "w500");
-                movie.Description = tmdbSearchResult.Overview;
-
-                return movie;
-            }
-            catch (MovieNotFoundException ex)
-            {
-                MessageBox.Show(ex.Message);
-                return movie;
-            }
-
-        }
-
-        public void UpdateMovie(Movie movie, Movie newMovie)
-        {
-            filmRepository.UpdateMovie(movie, newMovie);
+            await filmRepository.GetDetailsFromTMDbAsync(movie);
+            
         }
 
         public void ChangeSelectionOnMovie(Movie movie)

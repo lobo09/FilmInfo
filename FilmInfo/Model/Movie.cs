@@ -16,6 +16,10 @@ namespace FilmInfo.Model
         public DateTime MkvCreationTime { get; set; }
         public BitmapImage Poster { get; set; }
         public string Description { get; set; }
+        public string OriginalTitle { get; set; }
+        public DateTime ReleaseDate { get; set; }
+        public int Runtime { get; set; }
+        public List<string> Genres { get; set; }
         public Visibility isSelected { get; set; }
         public string MkvFile { get; set; }
         public string MkvFileFull { get; set; }

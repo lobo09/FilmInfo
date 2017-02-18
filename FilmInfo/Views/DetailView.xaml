@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FilmInfo.Views"
         x:Class="FilmInfo.Views.DetailView"
         mc:Ignorable="d"
-        Title="DetailView" Height="700" Width="800"
+        Title="DetailView" Height="700" Width="1000"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
 
@@ -16,33 +16,64 @@
     <Grid d:DataContext="{d:DesignData /SampleData/DetailViewModelSampleData.xaml}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="450"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="{Binding SelectedMovie.Name}" HorizontalAlignment="Center" FontSize="32"/>
+        <TextBlock Text="{Binding SelectedMovie.Name}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="32" FontWeight="Bold" />
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image Source="{Binding SelectedMovie.Poster}" Height="400" Margin="20">
+
+            <Image Source="{Binding SelectedMovie.Poster}" Grid.RowSpan="2" Height="400" Margin="20">
                 <Image.Effect>
                     <DropShadowEffect ShadowDepth="15" BlurRadius="30" Direction="315"/>
                 </Image.Effect>
             </Image>
-            <GroupBox Header="Info:" Grid.Column="1" Margin="10" FontWeight="DemiBold">
-                <Grid >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                </Grid>
-            </GroupBox>
+            <Grid Grid.Column="1" Grid.ColumnSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <GroupBox Header="Info:" Margin="10,10,10,5" FontWeight="DemiBold">
+                    <Grid Margin="10,0,10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Originaltitel:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding SelectedMovie.OriginalTitle}" VerticalAlignment="Bottom" FontSize="15"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Veröffentlichung:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding SelectedMovie.ReleaseDate , StringFormat=dd.MM.yyyy}" VerticalAlignment="Bottom" FontSize="15"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Laufzeit:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding SelectedMovie.Runtime}" VerticalAlignment="Bottom" FontSize="15"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Genre:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding SelectedMovie.Genres}" VerticalAlignment="Bottom" FontSize="15"/>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Beschreibung:" Grid.Row="1" FontWeight="DemiBold" Margin="10,5,10,20" >
+                    <ScrollViewer  VerticalScrollBarVisibility="Auto">
+                        <TextBlock  Margin="20" Text="{Binding SelectedMovie.Description}" FontWeight="Normal" FontSize="13" TextWrapping="WrapWithOverflow" />
+                    </ScrollViewer>
+                </GroupBox>
+            </Grid>
         </Grid>
-        <GroupBox Grid.Row="2" Header="Zusammenfassung:" Margin="10" FontWeight="DemiBold">
-            <ScrollViewer  VerticalScrollBarVisibility="Auto">
-                <TextBlock  Margin="20" Text="{Binding SelectedMovie.Description}" FontWeight="Normal" FontSize="13" TextWrapping="WrapWithOverflow" />
-            </ScrollViewer>
+        <GroupBox Grid.Row="2" Header="Darsteller:" Margin="10" FontWeight="DemiBold">
+            
         </GroupBox>
     </Grid>
 </Window>
