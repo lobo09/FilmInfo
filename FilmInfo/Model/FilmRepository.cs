@@ -5,6 +5,7 @@ using FilmInfo.Utility.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -110,15 +111,6 @@ namespace FilmInfo.Model
             else
             {
                 selectedMovie.isSelected = Visibility.Collapsed;
-            }
-        }
-
-        public void UpdateMovie(Movie movie, Movie newMovie)
-        {
-            var index = FilmDatabase.IndexOf(movie);
-            if (index != -1)
-            {
-                FilmDatabase[index] = newMovie;
             }
         }
 
