@@ -47,22 +47,49 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Margin="0,0,0,10">
                             <TextBlock Text="Originaltitel:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding SelectedMovie.OriginalTitle}" VerticalAlignment="Bottom" FontSize="15"/>
+                            <TextBlock Text="{Binding SelectedMovie.OriginalTitle}" VerticalAlignment="Bottom" FontWeight="Normal"/>
                         </StackPanel>
-                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" Margin="0,0,0,10">
                             <TextBlock Text="Veröffentlichung:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding SelectedMovie.ReleaseDate , StringFormat=dd.MM.yyyy}" VerticalAlignment="Bottom" FontSize="15"/>
+                            <TextBlock Text="{Binding SelectedMovie.ReleaseDate , StringFormat=dd.MM.yyyy}" VerticalAlignment="Bottom" FontWeight="Normal"/>
                         </StackPanel>
-                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Vertical" Margin="0,0,0,10">
                             <TextBlock Text="Laufzeit:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding SelectedMovie.Runtime}" VerticalAlignment="Bottom" FontSize="15"/>
+                            <TextBlock Text="{Binding SelectedMovie.Runtime, Converter={StaticResource TimeToStringConverter}}" VerticalAlignment="Bottom" FontWeight="Normal"/>
                         </StackPanel>
-                        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10">
+
+                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" Margin="0,0,0,10">
                             <TextBlock Text="Genre:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <TextBlock Text="{Binding SelectedMovie.Genres}" VerticalAlignment="Bottom" FontSize="15"/>
+                            <TextBlock Text="{Binding SelectedMovie.Genres, Converter={StaticResource ListToStringConverter}}" VerticalAlignment="Bottom" FontWeight="Normal"/>
                         </StackPanel>
+                        <Grid Name="UserRating" Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
+                                <Ellipse Height="80" Width="80" VerticalAlignment="Center" HorizontalAlignment="center" Fill="#AAC6C6C6" />
+                                <Ellipse Height="70" Width="70" Stroke="{Binding SelectedMovie.Rating, Converter={StaticResource RatingToColorConverter}}" StrokeThickness="7" VerticalAlignment="Center" HorizontalAlignment="center"/>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Label Content="{Binding SelectedMovie.Rating, Converter={StaticResource RatingToIntConverter}}"  FontSize="30"  FontWeight="Bold" Padding="4,0,0,1"/>
+                                    <Label Content="%"  VerticalAlignment="Center" Padding="0,0,0,10"/>
+                                </StackPanel>
+                            </Grid>
+                            <Label Grid.Row="0"  Grid.Column="1" Content="{Binding SelectedMovie.RatingCount}" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="10" Padding="4,2,2,2"/>
+                            <Label Grid.Row="1" Grid.Column="1" Content="Bewertungen" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="8" Padding="4,2,2,2"/>
+                        </Grid>
+
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="Beschreibung:" Grid.Row="1" FontWeight="DemiBold" Margin="10,5,10,20" >
@@ -73,7 +100,7 @@
             </Grid>
         </Grid>
         <GroupBox Grid.Row="2" Header="Darsteller:" Margin="10" FontWeight="DemiBold">
-            
+
         </GroupBox>
     </Grid>
 </Window>

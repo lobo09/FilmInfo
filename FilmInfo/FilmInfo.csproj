@@ -119,7 +119,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converter\ListToStringConverter.cs" />
+    <Compile Include="Converter\RatingToIntConverter.cs" />
+    <Compile Include="Converter\RatingToColorConverter.cs" />
     <Compile Include="Converter\SortOptionToBoolConverter.cs" />
+    <Compile Include="Converter\TimeToStringConverter.cs" />
     <Compile Include="Interfaces\ICommandAsync.cs" />
     <Compile Include="Model\FileOperations.cs" />
     <Compile Include="Model\Movie.cs" />

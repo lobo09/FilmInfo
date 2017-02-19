@@ -20,6 +20,8 @@ namespace FilmInfo.Model
         public DateTime ReleaseDate { get; set; }
         public int Runtime { get; set; }
         public List<string> Genres { get; set; }
+        public double Rating { get; set; }
+        public int RatingCount { get; set; }
         public Visibility isSelected { get; set; }
         public string MkvFile { get; set; }
         public string MkvFileFull { get; set; }

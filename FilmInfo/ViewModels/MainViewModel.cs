@@ -132,7 +132,7 @@ namespace FilmInfo.ViewModels
             {
                 filter = value;
                 RaisePropertyChanged("Filter");
-                RefreshMovieList();
+                SyncMovieList();
             }
         }
 
@@ -143,7 +143,7 @@ namespace FilmInfo.ViewModels
             {
                 sortOption = value;
                 RaisePropertyChanged("SortOption");
-                RefreshMovieList();
+                SyncMovieList();
             }
         }
 
@@ -154,7 +154,7 @@ namespace FilmInfo.ViewModels
             {
                 sortOrder = value;
                 RaisePropertyChanged("SortOrder");
-                RefreshMovieList();
+                SyncMovieList();
             }
         }
         #endregion
@@ -179,7 +179,7 @@ namespace FilmInfo.ViewModels
                 ProgressbarVisibility = Visibility.Visible;
                 EnableSidePanel = false;
                 await dataService.ScanAllMoviesAsync(progressBar, rootDirectory);
-                RefreshMovieList();
+                SyncMovieList();
                 ProgressbarVisibility = Visibility.Collapsed;
                 EnableSidePanel = true;
             }
@@ -196,7 +196,7 @@ namespace FilmInfo.ViewModels
             {
                 //TODO: Scanbar im Bild anzeigen
                 await dataService.GetDetailsFromTMDbAsync(movie as Movie);
-                RefreshMovieList();
+                SyncMovieList();
             }
         }
 
@@ -211,7 +211,7 @@ namespace FilmInfo.ViewModels
                 await dataService.GetDetailsFromTMDbAsync(movie as Movie);
                 ScanProgress = movieCount++ * 100 / MoviesWithMissingDetails.Count;
             }
-            RefreshMovieList();
+            SyncMovieList();
             ProgressbarVisibility = Visibility.Collapsed;
         }
 
@@ -225,7 +225,7 @@ namespace FilmInfo.ViewModels
                 await dataService.GetDetailsFromTMDbAsync(movie as Movie);
                 ScanProgress = movieCount++ * 100 / Movies.Count;
             }
-            RefreshMovieList();
+            SyncMovieList();
             ProgressbarVisibility = Visibility.Collapsed;
         }
 
@@ -239,7 +239,7 @@ namespace FilmInfo.ViewModels
         {
             var movie = obj as Movie;
             dataService.ChangeSelectionOnMovie(movie);
-            RefreshMovieList();
+            SyncMovieList();
         }
             #endregion
 
@@ -248,7 +248,7 @@ namespace FilmInfo.ViewModels
             ScanProgress = progress;
         }
 
-        private void RefreshMovieList()
+        private void SyncMovieList()
         {
             Movies = dataService.GetProcessedMovies(SortOption, SortOrder, Filter);
         }

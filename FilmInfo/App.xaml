@@ -8,6 +8,10 @@
         <BitmapImage x:Key="isSelectedBitmap" UriSource="/Resources/Images/isSelected.png"/>
         <local:ViewModelLocator x:Key="ViewModelLocator"/>
         <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converter:ListToStringConverter x:Key="ListToStringConverter"/>
         <converter:SortOptionToBoolConverter x:Key="SortOptionToBoolConverter"/>
+        <converter:TimeToStringConverter x:Key="TimeToStringConverter"/>
+        <converter:RatingToIntConverter x:Key="RatingToIntConverter"/>
+        <converter:RatingToColorConverter x:Key="RatingToColorConverter"/>
     </Application.Resources>
 </Application>

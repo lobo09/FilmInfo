@@ -63,7 +63,7 @@ namespace FilmInfo.Model
                     throw new MovieNotFoundException(movie);
                 }
             }
-            var bestMatch = await tmdbClient.GetMovieAsync(bestSearchMatch.Id,"de",MovieMethods.Undefined);
+            var bestMatch = await tmdbClient.GetMovieAsync(bestSearchMatch.Id,"de",MovieMethods.ReleaseDates);
             return bestMatch;
         }
 
@@ -82,14 +82,16 @@ namespace FilmInfo.Model
 
             foreach (var result in searchResults)
             {
-                var titleMatch = StringMatchInPercent(movie.Name, result.Title, MatchCriteria.Short);
-                double yearMatch;
+                var titleMatchGerman = StringMatchInPercent(movie.Name, result.Title, MatchCriteria.Short);
+                var titleMatchOriginal = StringMatchInPercent(movie.Name, result.OriginalTitle, MatchCriteria.Short);
+                var titleMatch = Math.Max(titleMatchGerman, titleMatchOriginal);
 
-                try
+                double yearMatch;
+                if(result.ReleaseDate != null)
                 {
                     yearMatch = YearMatchInPercent(movie.Year, result.ReleaseDate.Value.Year);
                 }
-                catch(InvalidOperationException)
+               else
                 {
                     yearMatch = 0;
                 }
