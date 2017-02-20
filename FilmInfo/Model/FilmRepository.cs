@@ -62,26 +62,30 @@ namespace FilmInfo.Model
                 var movieInDB = FilmDatabase[index];
                 try
                 {
+                    
                     var tmdbSearchResult = await tmdbWrapper.SearchMovieAsync(movie);
+                    var fskTask = Altersfreigaben.getFskAsync(tmdbSearchResult.Id);
+                    var tmdbDetails = await tmdbWrapper.GetMovieDetailsAsync(tmdbSearchResult.Id);
 
                     //TODO: Fill Details into movie
-                    movieInDB.Poster = tmdbWrapper.GetPosterFromTMDb(tmdbSearchResult.PosterPath, "w500");
-                    movieInDB.Description = tmdbSearchResult.Overview;
-                    movieInDB.ReleaseDate = tmdbSearchResult
+                    movieInDB.Poster = tmdbWrapper.GetPosterFromTMDb(tmdbDetails.PosterPath, "w500");
+                    movieInDB.Description = tmdbDetails.Overview;
+                    movieInDB.ReleaseDate = tmdbDetails
                                                 .ReleaseDates.Results
                                                 .Where(r => r.Iso_3166_1 == "DE")
                                                 .SelectMany(r => r.ReleaseDates)
                                                 .Select(r => r.ReleaseDate)
                                                 .FirstOrDefault();
-                    movieInDB.OriginalTitle = tmdbSearchResult.OriginalTitle;
-                    movieInDB.Runtime = tmdbSearchResult.Runtime.Value;
+                    movieInDB.OriginalTitle = tmdbDetails.OriginalTitle;
+                    movieInDB.Runtime = tmdbDetails.Runtime.Value;
                     movieInDB.Genres = new List<string>();
-                    foreach(var genre in tmdbSearchResult.Genres)
+                    foreach(var genre in tmdbDetails.Genres)
                     {
                         movieInDB.Genres.Add(genre.Name);
                     }
-                    movieInDB.Rating = tmdbSearchResult.VoteAverage;
-                    movieInDB.RatingCount = tmdbSearchResult.VoteCount;
+                    movieInDB.Rating = tmdbDetails.VoteAverage;
+                    movieInDB.RatingCount = tmdbDetails.VoteCount;
+                    movieInDB.Fsk = await fskTask;
                 }
                 catch (MovieNotFoundException ex)
                 {

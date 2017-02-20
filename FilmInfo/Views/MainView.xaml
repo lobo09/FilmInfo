@@ -33,7 +33,15 @@
                     <Image Source="{DynamicResource isSelectedBitmap}" Width="200"/>
                     <Border CornerRadius="25" BorderBrush="Black" BorderThickness="6"/>
                 </Grid>
-                <!--<TextBlock Text="{Binding Name}" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" MaxWidth="250" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Bottom" Background="#BFFFFFFF" />-->
+                
+                
+                
+                <!--<TextBlock Text="{Binding Name}" Visibility="{Binding RelativeSource={RelativeSource Self} , Converter={StaticResource BoolToVisibilityConverter}}" 
+                           TextWrapping="Wrap" FontSize="15" FontWeight="Bold" MaxWidth="250" TextAlignment="Center" HorizontalAlignment="Center" 
+                           VerticalAlignment="Bottom" Background="#BFFFFFFF" />-->
+           
+            
+            
             </Grid>
         </DataTemplate>
     </Window.Resources>
@@ -63,7 +71,7 @@
                 <Label Content="{Binding MovieCountLabel}"/>
             </StatusBarItem>
             <StatusBarItem Grid.Column="1" Margin="0,0,20,0">
-                <Slider x:Name="uiScaleSlider" Width="300" Minimum="0.2" Maximum="2" Value="1"/>
+                <Slider x:Name="uiScaleSlider" Width="200" Minimum="0.2" Maximum="2" Value="1" />
             </StatusBarItem>
         </StatusBar>
         <Grid>
@@ -111,6 +119,10 @@
                                     <Setter Property="IsSelected" Value="True"/>
                                 </Trigger>
                             </Style.Triggers>
+                            <Style.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                            </Style.Resources>
                             <Setter Property="Padding" Value="2"/>
                             <Setter Property="BorderThickness" Value="0"/>
                             <Setter Property="ContextMenu">

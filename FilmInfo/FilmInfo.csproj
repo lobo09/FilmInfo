@@ -119,12 +119,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converter\FSKIntToFSKImageConverter.cs" />
     <Compile Include="Converter\ListToStringConverter.cs" />
     <Compile Include="Converter\RatingToIntConverter.cs" />
     <Compile Include="Converter\RatingToColorConverter.cs" />
     <Compile Include="Converter\SortOptionToBoolConverter.cs" />
     <Compile Include="Converter\TimeToStringConverter.cs" />
     <Compile Include="Interfaces\ICommandAsync.cs" />
+    <Compile Include="Model\Altersfreigaben.cs" />
     <Compile Include="Model\FileOperations.cs" />
     <Compile Include="Model\Movie.cs" />
     <Compile Include="Model\FilmRepository.cs" />
@@ -198,6 +200,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\isSelected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\FSK\FSK0.png" />
+    <Resource Include="Resources\Images\FSK\FSK12.png" />
+    <Resource Include="Resources\Images\FSK\FSK16.png" />
+    <Resource Include="Resources\Images\FSK\FSK18.png" />
+    <Resource Include="Resources\Images\FSK\FSK6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\FSK\FSKUnknown.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

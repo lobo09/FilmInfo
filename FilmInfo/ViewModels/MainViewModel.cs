@@ -16,6 +16,7 @@ using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FilmInfo.Utility.Enums;
+using System.Diagnostics;
 
 namespace FilmInfo.ViewModels
 {
@@ -86,8 +87,12 @@ namespace FilmInfo.ViewModels
             }
             set
             {
-                selectedMovie = value;
-                RaisePropertyChanged("SelectedMovie");
+                if (value != null && value != selectedMovie)
+                {
+                    selectedMovie = value;
+                    RaisePropertyChanged("SelectedMovie");
+                    Debug.WriteLine($"SelectedMovie: {value.Name}");
+                }
             }
         }
 
@@ -231,7 +236,8 @@ namespace FilmInfo.ViewModels
 
         private void OpenDetailView(object obj)
         {
-            Messenger.Default.Send<Movie>(SelectedMovie);
+            Messenger.Default.Send<Movie>(obj as Movie);
+            Debug.WriteLine($"OpenDetailsView: {SelectedMovie.Name}");
             dialogService.OpenDetailView();
         }
 
@@ -241,9 +247,9 @@ namespace FilmInfo.ViewModels
             dataService.ChangeSelectionOnMovie(movie);
             SyncMovieList();
         }
-            #endregion
+        #endregion
 
-            private void OnProgressChanged(int progress)
+        private void OnProgressChanged(int progress)
         {
             ScanProgress = progress;
         }

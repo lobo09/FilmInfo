@@ -13,5 +13,6 @@
         <converter:TimeToStringConverter x:Key="TimeToStringConverter"/>
         <converter:RatingToIntConverter x:Key="RatingToIntConverter"/>
         <converter:RatingToColorConverter x:Key="RatingToColorConverter"/>
+        <converter:FSKIntToFSKImageConverter x:Key="FSKIntToFSKImageConverter"/>
     </Application.Resources>
 </Application>

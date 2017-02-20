@@ -11,6 +11,11 @@ namespace FilmInfo.Model
 {
     public class Movie
     {
+        public Movie()
+        {
+            Fsk = -1;
+        }
+
         public string Name { get; set; }
         public int Year { get; set; }
         public DateTime MkvCreationTime { get; set; }
@@ -22,6 +27,7 @@ namespace FilmInfo.Model
         public List<string> Genres { get; set; }
         public double Rating { get; set; }
         public int RatingCount { get; set; }
+        public int Fsk { get; set; }
         public Visibility isSelected { get; set; }
         public string MkvFile { get; set; }
         public string MkvFileFull { get; set; }

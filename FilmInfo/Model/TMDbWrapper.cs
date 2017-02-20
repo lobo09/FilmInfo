@@ -22,7 +22,7 @@ namespace FilmInfo.Model
     {
         private TMDbClient tmdbClient = new TMDbClient("d64071ba861f30df005b0c9e0ff9b67e");
 
-        public async Task<TMDbLib.Objects.Movies.Movie> SearchMovieAsync(Movie movie)
+        public async Task<SearchMovie> SearchMovieAsync(Movie movie)
         {
             SearchContainer<SearchMovie> movieSearchContainer = await tmdbClient.SearchMovieAsync(movie.Name, "de", 0, true).ConfigureAwait(false);
 
@@ -63,8 +63,12 @@ namespace FilmInfo.Model
                     throw new MovieNotFoundException(movie);
                 }
             }
-            var bestMatch = await tmdbClient.GetMovieAsync(bestSearchMatch.Id,"de",MovieMethods.ReleaseDates);
-            return bestMatch;
+            return bestSearchMatch;
+        }
+
+        public async Task<TMDbLib.Objects.Movies.Movie> GetMovieDetailsAsync(int tmdbID)
+        {
+            return await tmdbClient.GetMovieAsync(tmdbID, "de", MovieMethods.ReleaseDates);
         }
 
         public BitmapImage GetPosterFromTMDb(string posterPath, string resolution)
@@ -76,7 +80,8 @@ namespace FilmInfo.Model
         private SearchMovie FindBestMatch(Movie movie, List<SearchMovie> searchResults)
         {
             const double TITLE_WEIGHT = 0.70;
-            const double YEAR_WEIGHT = 0.30;
+            const double YEAR_WEIGHT = 0.20;
+            const double STRINGLENGTH_WEIGHT = 0.10;
 
             var results = new Dictionary<MatchKey, SearchMovie>();
 
@@ -85,6 +90,10 @@ namespace FilmInfo.Model
                 var titleMatchGerman = StringMatchInPercent(movie.Name, result.Title, MatchCriteria.Short);
                 var titleMatchOriginal = StringMatchInPercent(movie.Name, result.OriginalTitle, MatchCriteria.Short);
                 var titleMatch = Math.Max(titleMatchGerman, titleMatchOriginal);
+
+                var stringLengthMatchGerman = StringLengthMatchinPercent(movie.Name, result.Title);
+                var stringLengthMatchOriginal = StringLengthMatchinPercent(movie.Name, result.Title);
+                var stringLengthMatch = Math.Max(stringLengthMatchGerman, stringLengthMatchOriginal);
 
                 double yearMatch;
                 if(result.ReleaseDate != null)
@@ -96,7 +105,8 @@ namespace FilmInfo.Model
                     yearMatch = 0;
                 }
 
-                var totalMatch = (titleMatch * TITLE_WEIGHT) + (yearMatch * YEAR_WEIGHT);
+
+                var totalMatch = (titleMatch * TITLE_WEIGHT) + (yearMatch * YEAR_WEIGHT) + (stringLengthMatch * STRINGLENGTH_WEIGHT);
 
                 results.Add(new MatchKey(totalMatch, result.Popularity), result);
             }
@@ -104,6 +114,14 @@ namespace FilmInfo.Model
             var bestMatch = results.OrderByDescending(m => m.Key.Match).ThenByDescending(m => m.Key.Popularity).Select(m => m.Value).First();
 
             return bestMatch;
+        }
+
+        private double StringLengthMatchinPercent(string string1, string string2)
+        {
+            double longString = Math.Max(string1.Length, string2.Length);
+            double shortString = Math.Min(string1.Length, string2.Length);
+
+            return shortString / longString;
         }
 
         private double YearMatchInPercent(int year1, int year2)
@@ -171,7 +189,6 @@ namespace FilmInfo.Model
                 return matchSum / smallList.Count;
             }
         }
-
 
         private double WordMatchInPercent(string str1, string str2)
         {
