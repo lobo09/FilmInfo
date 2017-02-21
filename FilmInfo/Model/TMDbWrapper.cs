@@ -80,48 +80,46 @@ namespace FilmInfo.Model
         private SearchMovie FindBestMatch(Movie movie, List<SearchMovie> searchResults)
         {
             const double TITLE_WEIGHT = 0.70;
-            const double YEAR_WEIGHT = 0.20;
-            const double STRINGLENGTH_WEIGHT = 0.10;
+            const double YEAR_WEIGHT = 0.30;
 
             var results = new Dictionary<MatchKey, SearchMovie>();
+            double highestMatch = 0;
 
             foreach (var result in searchResults)
             {
                 var titleMatchGerman = StringMatchInPercent(movie.Name, result.Title, MatchCriteria.Short);
                 var titleMatchOriginal = StringMatchInPercent(movie.Name, result.OriginalTitle, MatchCriteria.Short);
                 var titleMatch = Math.Max(titleMatchGerman, titleMatchOriginal);
-
-                var stringLengthMatchGerman = StringLengthMatchinPercent(movie.Name, result.Title);
-                var stringLengthMatchOriginal = StringLengthMatchinPercent(movie.Name, result.Title);
-                var stringLengthMatch = Math.Max(stringLengthMatchGerman, stringLengthMatchOriginal);
-
                 double yearMatch;
-                if(result.ReleaseDate != null)
+                if (result.ReleaseDate != null)
                 {
                     yearMatch = YearMatchInPercent(movie.Year, result.ReleaseDate.Value.Year);
                 }
-               else
+                else
                 {
                     yearMatch = 0;
                 }
-
-
-                var totalMatch = (titleMatch * TITLE_WEIGHT) + (yearMatch * YEAR_WEIGHT) + (stringLengthMatch * STRINGLENGTH_WEIGHT);
-
+                var totalMatch = (titleMatch * TITLE_WEIGHT) + (yearMatch * YEAR_WEIGHT);
                 results.Add(new MatchKey(totalMatch, result.Popularity), result);
+                highestMatch = Math.Max(highestMatch, totalMatch);
             }
-
-            var bestMatch = results.OrderByDescending(m => m.Key.Match).ThenByDescending(m => m.Key.Popularity).Select(m => m.Value).First();
-
+            var bestMatches = results.Where(r => r.Key.Match == highestMatch);
+            if (bestMatches.Count() > 1)
+            {
+                var bestMatchesRefined = new Dictionary<MatchKey, SearchMovie>();
+                foreach (var match in bestMatches)
+                {
+                    var titleMatchGermanLong = StringMatchInPercent(movie.Name, match.Value.Title, MatchCriteria.Long);
+                    var titleMatchOriginalLong = StringMatchInPercent(movie.Name, match.Value.OriginalTitle, MatchCriteria.Long);
+                    var titleMatchLong = Math.Max(titleMatchGermanLong, titleMatchOriginalLong);
+                    bestMatchesRefined.Add(new MatchKey(titleMatchLong, match.Key.Popularity), match.Value);
+                }
+                bestMatches = bestMatchesRefined
+                    .Where(r => r.Value.PosterPath != "" && r.Value.Overview != "")
+                    .OrderByDescending(r => r.Key.Match).ThenByDescending(r => r.Key.Popularity);
+            }
+            var bestMatch = bestMatches.Select(r => r.Value).FirstOrDefault();
             return bestMatch;
-        }
-
-        private double StringLengthMatchinPercent(string string1, string string2)
-        {
-            double longString = Math.Max(string1.Length, string2.Length);
-            double shortString = Math.Min(string1.Length, string2.Length);
-
-            return shortString / longString;
         }
 
         private double YearMatchInPercent(int year1, int year2)

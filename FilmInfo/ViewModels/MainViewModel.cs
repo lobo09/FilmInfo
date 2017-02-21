@@ -32,9 +32,11 @@ namespace FilmInfo.ViewModels
         private DialogService dialogService;
         private ObservableCollection<Movie> movies;
         private bool enableSidePanel;
-        private string filter;
         private string sortOption;
         private SortOrder sortOrder;
+        private string filter;
+        private int? filterFskMin;
+        private int? filterFskMax;
         #endregion
 
         public MainViewModel()
@@ -50,8 +52,6 @@ namespace FilmInfo.ViewModels
 
         #region Properties
         public ICommand ScanDirectoryCommand { get; set; }
-        //TODO: GetPoster entfernen
-        public ICommand GetPosterCommand { get; set; }
         public ICommand GetDetailFromTMDbCommand { get; set; }
         public ICommand GetMissingDetailFromTMDbCommand { get; set; }
         public ICommand GetAllDetailFromTMDbCommand { get; set; }
@@ -130,17 +130,6 @@ namespace FilmInfo.ViewModels
             }
         }
 
-        public string Filter
-        {
-            get { return filter; }
-            set
-            {
-                filter = value;
-                RaisePropertyChanged("Filter");
-                SyncMovieList();
-            }
-        }
-
         public string SortOption
         {
             get { return sortOption; }
@@ -162,6 +151,40 @@ namespace FilmInfo.ViewModels
                 SyncMovieList();
             }
         }
+
+        public string Filter
+        {
+            get { return filter; }
+            set
+            {
+                filter = value;
+                RaisePropertyChanged("Filter");
+                SyncMovieList();
+            }
+        }
+
+
+        public int? FilterFskMin
+        {
+            get { return filterFskMin; }
+            set
+            {
+                filterFskMin = value;
+                RaisePropertyChanged("FilterFskMin");
+                SyncMovieList();
+            }
+        }
+
+        public int? FilterFskMax
+        {
+            get { return filterFskMax; }
+            set
+            {
+                filterFskMax = value;
+                RaisePropertyChanged("FilterFskMax");
+                SyncMovieList();
+            }
+        }
         #endregion
 
         #region Commands
@@ -178,19 +201,15 @@ namespace FilmInfo.ViewModels
 
         private async void ScanDirectoryAsync(object obj)
         {
-            try
+            var rootDirectory = dataService.GetNewRootDirectory();
+            if (rootDirectory != "")
             {
-                var rootDirectory = dataService.GetNewRootDirectory();
                 ProgressbarVisibility = Visibility.Visible;
                 EnableSidePanel = false;
                 await dataService.ScanAllMoviesAsync(progressBar, rootDirectory);
                 SyncMovieList();
                 ProgressbarVisibility = Visibility.Collapsed;
                 EnableSidePanel = true;
-            }
-            catch (DirectoryNotFoundException)
-            {
-
             }
         }
 
@@ -256,7 +275,7 @@ namespace FilmInfo.ViewModels
 
         private void SyncMovieList()
         {
-            Movies = dataService.GetProcessedMovies(SortOption, SortOrder, Filter);
+            Movies = dataService.GetProcessedMovies(SortOption, SortOrder, Filter, FilterFskMin, FilterFskMax);
         }
 
         private void RaisePropertyChanged(string propertyName)

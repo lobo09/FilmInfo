@@ -57,12 +57,12 @@ namespace FilmInfo.Model
         public async Task GetDetailsFromTMDbAsync(Movie movie)
         {
             var index = FilmDatabase.IndexOf(movie);
-            if(index != -1)
+            if (index != -1)
             {
                 var movieInDB = FilmDatabase[index];
                 try
                 {
-                    
+
                     var tmdbSearchResult = await tmdbWrapper.SearchMovieAsync(movie);
                     var fskTask = Altersfreigaben.getFskAsync(tmdbSearchResult.Id);
                     var tmdbDetails = await tmdbWrapper.GetMovieDetailsAsync(tmdbSearchResult.Id);
@@ -70,22 +70,33 @@ namespace FilmInfo.Model
                     //TODO: Fill Details into movie
                     movieInDB.Poster = tmdbWrapper.GetPosterFromTMDb(tmdbDetails.PosterPath, "w500");
                     movieInDB.Description = tmdbDetails.Overview;
-                    movieInDB.ReleaseDate = tmdbDetails
-                                                .ReleaseDates.Results
-                                                .Where(r => r.Iso_3166_1 == "DE")
-                                                .SelectMany(r => r.ReleaseDates)
-                                                .Select(r => r.ReleaseDate)
-                                                .FirstOrDefault();
                     movieInDB.OriginalTitle = tmdbDetails.OriginalTitle;
                     movieInDB.Runtime = tmdbDetails.Runtime.Value;
                     movieInDB.Genres = new List<string>();
-                    foreach(var genre in tmdbDetails.Genres)
+                    foreach (var genre in tmdbDetails.Genres)
                     {
                         movieInDB.Genres.Add(genre.Name);
                     }
                     movieInDB.Rating = tmdbDetails.VoteAverage;
                     movieInDB.RatingCount = tmdbDetails.VoteCount;
-                    movieInDB.Fsk = await fskTask;
+
+                    var releaseDateItem = tmdbDetails
+                                                .ReleaseDates.Results
+                                                .Where(r => r.Iso_3166_1 == "DE")
+                                                .SelectMany(r => r.ReleaseDates)
+                                                .FirstOrDefault();
+                    if (releaseDateItem != null)
+                    {
+                        movie.ReleaseDate = releaseDateItem.ReleaseDate;
+                    }
+                    if (releaseDateItem != null && releaseDateItem.Certification != "" && int.TryParse(releaseDateItem.Certification, out int fsk))
+                    {
+                        movieInDB.Fsk = fsk;
+                    }
+                    else
+                    {
+                        movieInDB.Fsk = await fskTask;
+                    }
                 }
                 catch (MovieNotFoundException ex)
                 {
@@ -94,13 +105,13 @@ namespace FilmInfo.Model
             }
         }
 
-        public List<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filter)
+        public List<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filter, int? fskMin, int? fskMax)
         {
             var processedMovieList = FilmDatabase;
 
-            if (!string.IsNullOrEmpty(filter))
+            if (!string.IsNullOrEmpty(filter) || fskMin != null || fskMax != null)
             {
-                processedMovieList = FilterMovies(processedMovieList, filter);
+                processedMovieList = FilterMovies(processedMovieList, filter, fskMin, fskMax);
             }
 
             if (!string.IsNullOrEmpty(sortType))
@@ -124,40 +135,64 @@ namespace FilmInfo.Model
             }
         }
 
-        private List<Movie> FilterMovies(List<Movie> movieList, string filter)
+        private List<Movie> FilterMovies(List<Movie> movieList, string filter, int? fskMin, int? fskMax)
         {
-            if (!string.IsNullOrEmpty(filter))
-                movieList = movieList.Where(m => m.Name.ToLower().Contains(filter.ToLower())).ToList();
+            IEnumerable<Movie> filteredList;
+            filteredList = movieList;
 
-            return movieList;
+            if (!string.IsNullOrEmpty(filter))
+                filteredList = filteredList.Where(m => m.Name.ToLower().Contains(filter.ToLower()));
+
+            if (fskMin != null || fskMax != null)
+            {
+                fskMin = fskMin ?? 0;
+                fskMax = fskMax ?? 18;
+                filteredList = filteredList.Where(m => m.Fsk == -1 || (m.Fsk >= fskMin && m.Fsk <= fskMax));
+            }
+            return filteredList.ToList();
         }
 
         private List<Movie> SortMovies(List<Movie> movieList, string sortType, SortOrder sortOrder)
         {
+            IEnumerable<Movie> orderedList = movieList;
             switch (sortType)
             {
                 case "name":
                     if (sortOrder == SortOrder.Aufsteigend)
-                        movieList = movieList.OrderBy(m => m.Name).ToList();
+                        orderedList = orderedList.OrderBy(m => m.Name);
                     else
-                        movieList = movieList.OrderByDescending(m => m.Name).ToList();
+                        orderedList = orderedList.OrderByDescending(m => m.Name);
                     break;
 
                 case "year":
                     if (sortOrder == SortOrder.Aufsteigend)
-                        movieList = movieList.OrderBy(m => m.Year).ToList();
+                        orderedList = orderedList.OrderBy(m => m.Year);
                     else
-                        movieList = movieList.OrderByDescending(m => m.Year).ToList();
+                        orderedList = orderedList.OrderByDescending(m => m.Year);
                     break;
 
                 case "newest":
                     if (sortOrder == SortOrder.Aufsteigend)
-                        movieList = movieList.OrderBy(m => m.MkvCreationTime).ToList();
+                        orderedList = orderedList.OrderBy(m => m.MkvCreationTime);
                     else
-                        movieList = movieList.OrderByDescending(m => m.MkvCreationTime).ToList();
+                        orderedList = orderedList.OrderByDescending(m => m.MkvCreationTime);
+                    break;
+
+                case "rating":
+                    if (sortOrder == SortOrder.Aufsteigend)
+                        orderedList = orderedList.OrderBy(m => m.Rating);
+                    else
+                        orderedList = orderedList.OrderByDescending(m => m.Rating);
+                    break;
+
+                case "fsk":
+                    if (sortOrder == SortOrder.Aufsteigend)
+                        orderedList = orderedList.OrderBy(m => m.Fsk);
+                    else
+                        orderedList = orderedList.OrderByDescending(m => m.Fsk);
                     break;
             }
-            return movieList;
+            return orderedList.ToList();
         }
 
         private Movie SetAllFilesInMovie(DirectoryInfo directory)

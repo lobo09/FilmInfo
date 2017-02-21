@@ -29,6 +29,10 @@ namespace FilmInfo.Model
                 {
                     return dlg.FileName;
                 }
+                else
+                {
+                    return "";
+                }
             }
             throw new DirectoryNotFoundException();
         }

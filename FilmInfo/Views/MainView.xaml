@@ -33,15 +33,15 @@
                     <Image Source="{DynamicResource isSelectedBitmap}" Width="200"/>
                     <Border CornerRadius="25" BorderBrush="Black" BorderThickness="6"/>
                 </Grid>
-                
-                
-                
+
+
+
                 <!--<TextBlock Text="{Binding Name}" Visibility="{Binding RelativeSource={RelativeSource Self} , Converter={StaticResource BoolToVisibilityConverter}}" 
                            TextWrapping="Wrap" FontSize="15" FontWeight="Bold" MaxWidth="250" TextAlignment="Center" HorizontalAlignment="Center" 
                            VerticalAlignment="Bottom" Background="#BFFFFFFF" />-->
-           
-            
-            
+
+
+
             </Grid>
         </DataTemplate>
     </Window.Resources>
@@ -88,11 +88,29 @@
                         <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Name" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=name, Converter={StaticResource SortOptionToBoolConverter}}"/>
                         <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Jahr" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=year, Converter={StaticResource SortOptionToBoolConverter}}"/>
                         <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Hinzugefügt" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=newest, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Wertung" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=rating, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="FSK" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=fsk, Converter={StaticResource SortOptionToBoolConverter}}"/>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Filter:" Margin="5,5,5,5" FontSize="15" FontWeight="Bold" BorderBrush="DarkGray">
                     <StackPanel>
-                        <TextBox FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding Filter, Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel>
+                            <Label Content="generell" HorizontalAlignment="Center" FontWeight="Medium" FontSize="13"/>
+                            <TextBox FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding Filter, Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel>
+                            <Label Content="FSK" HorizontalAlignment="Center" FontWeight="Medium" FontSize="13"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterFskMin, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Label Grid.Column="1" Content="-" Padding="0" VerticalAlignment="Center"/>
+                                <TextBox Grid.Column="2" FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterFskMax, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                        </StackPanel>
 
                     </StackPanel>
                 </GroupBox>
