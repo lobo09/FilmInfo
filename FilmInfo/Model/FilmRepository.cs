@@ -68,10 +68,27 @@ namespace FilmInfo.Model
                     var tmdbDetails = await tmdbWrapper.GetMovieDetailsAsync(tmdbSearchResult.Id);
 
                     //TODO: Fill Details into movie
-                    movieInDB.Poster = tmdbWrapper.GetPosterFromTMDb(tmdbDetails.PosterPath, "w500");
+                    movieInDB.Poster = tmdbWrapper.GetImageFromTMDb(tmdbDetails.PosterPath, "w500");
+                    //for (int i = 0; i < 6; i++)
+                    //{
+                    //    var cast = new Cast();
+                    //    cast.Image = tmdbWrapper.GetImageFromTMDb(tmdbDetails.Credits.Cast.ElementAt(i).ProfilePath, "w185");
+                    //    cast.Name = tmdbDetails.Credits.Cast.ElementAt(i).Name;
+                    //    cast.Character = tmdbDetails.Credits.Cast.ElementAt(i).Character;
+                    //    movieInDB.CastList.Add(cast);
+
+                    //}
+                    foreach (var item in tmdbDetails.Credits.Cast.Take(6))
+                    {
+                        var cast = new Cast();
+                        cast.Image = tmdbWrapper.GetImageFromTMDb(item.ProfilePath, "w185");
+                        cast.Name = item.Name;
+                        cast.Character = item.Character;
+                        movieInDB.CastList.Add(cast);
+                    }
                     movieInDB.Description = tmdbDetails.Overview;
                     movieInDB.OriginalTitle = tmdbDetails.OriginalTitle;
-                    movieInDB.Runtime = tmdbDetails.Runtime.Value;
+                    movieInDB.Runtime = tmdbDetails.Runtime != null ? tmdbDetails.Runtime.Value : 0;
                     movieInDB.Genres = new List<string>();
                     foreach (var genre in tmdbDetails.Genres)
                     {
@@ -105,13 +122,15 @@ namespace FilmInfo.Model
             }
         }
 
-        public List<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filter, int? fskMin, int? fskMax)
+        public List<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filterName, string filterGenre, int? filterFskMin, int? filterFskMax,
+                                                                int? filterRatingMin, int? filterRatingMax, int? filterYearMin, int? filterYearMax)
         {
             var processedMovieList = FilmDatabase;
 
-            if (!string.IsNullOrEmpty(filter) || fskMin != null || fskMax != null)
+            if (!string.IsNullOrEmpty(filterName) || !string.IsNullOrEmpty(filterGenre) || filterFskMin != null || filterFskMax != null ||
+                filterRatingMin != null || filterRatingMax != null || filterYearMin != null || filterYearMax != null)
             {
-                processedMovieList = FilterMovies(processedMovieList, filter, fskMin, fskMax);
+                processedMovieList = FilterMovies(processedMovieList, filterName, filterGenre, filterFskMin, filterFskMax, filterRatingMin, filterRatingMax, filterYearMin, filterYearMax);
             }
 
             if (!string.IsNullOrEmpty(sortType))
@@ -135,19 +154,39 @@ namespace FilmInfo.Model
             }
         }
 
-        private List<Movie> FilterMovies(List<Movie> movieList, string filter, int? fskMin, int? fskMax)
+        private List<Movie> FilterMovies(List<Movie> movieList, string filterName, string filterGenre, int? filterFskMin, int? filterFskMax,
+                                          int? filterRatingMin, int? filterRatingMax, int? filterYearMin, int? filterYearMax)
         {
             IEnumerable<Movie> filteredList;
             filteredList = movieList;
 
-            if (!string.IsNullOrEmpty(filter))
-                filteredList = filteredList.Where(m => m.Name.ToLower().Contains(filter.ToLower()));
+            if (!string.IsNullOrEmpty(filterName))
+                filteredList = filteredList.Where(m => m.Name.ToLower().Contains(filterName.ToLower()));
 
-            if (fskMin != null || fskMax != null)
+            if (!string.IsNullOrEmpty(filterGenre))
             {
-                fskMin = fskMin ?? 0;
-                fskMax = fskMax ?? 18;
-                filteredList = filteredList.Where(m => m.Fsk == -1 || (m.Fsk >= fskMin && m.Fsk <= fskMax));
+                filteredList = filteredList.Where(m => m.Genres.Any(g => g.ToUpper().Contains(filterGenre.ToUpper())));
+            }
+
+            if (filterFskMin != null || filterFskMax != null)
+            {
+                filterFskMin = filterFskMin ?? 0;
+                filterFskMax = filterFskMax ?? 18;
+                filteredList = filteredList.Where(m => m.Fsk == -1 || (m.Fsk >= filterFskMin && m.Fsk <= filterFskMax));
+            }
+
+            if (filterRatingMin != null || filterRatingMax != null)
+            {
+                filterRatingMin = filterRatingMin ?? 0;
+                filterRatingMax = filterRatingMax ?? 100;
+                filteredList = filteredList.Where(m => m.Rating * 10 >= filterRatingMin && m.Rating * 10 <= filterRatingMax);
+            }
+
+            if (filterYearMin != null || filterYearMax != null)
+            {
+                filterYearMin = filterYearMin ?? 1900;
+                filterYearMax = filterYearMax ?? 2100;
+                filteredList = filteredList.Where(m => m.ReleaseDate.Year >= filterYearMin && m.ReleaseDate.Year <= filterYearMax);
             }
             return filteredList.ToList();
         }

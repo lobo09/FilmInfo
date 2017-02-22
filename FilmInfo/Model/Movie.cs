@@ -13,6 +13,7 @@ namespace FilmInfo.Model
     {
         public Movie()
         {
+            CastList = new List<Cast>();
             Fsk = -1;
         }
 
@@ -20,6 +21,7 @@ namespace FilmInfo.Model
         public int Year { get; set; }
         public DateTime MkvCreationTime { get; set; }
         public BitmapImage Poster { get; set; }
+        public List<Cast> CastList { get; set; }
         public string Description { get; set; }
         public string OriginalTitle { get; set; }
         public DateTime ReleaseDate { get; set; }

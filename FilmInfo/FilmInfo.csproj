@@ -127,6 +127,7 @@
     <Compile Include="Converter\TimeToStringConverter.cs" />
     <Compile Include="Interfaces\ICommandAsync.cs" />
     <Compile Include="Model\Altersfreigaben.cs" />
+    <Compile Include="Model\Cast.cs" />
     <Compile Include="Model\FileOperations.cs" />
     <Compile Include="Model\Movie.cs" />
     <Compile Include="Model\FilmRepository.cs" />

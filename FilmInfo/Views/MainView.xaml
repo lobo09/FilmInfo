@@ -81,34 +81,64 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Background="#FFF0F0F0" IsEnabled="{Binding EnableSidePanel}">
-                <GroupBox Header="Sortierung:" Margin="5,5,5,5" FontSize="15" FontWeight="Bold" BorderBrush="DarkGray">
+                <StackPanel IsEnabled="{Binding EnableSidePanel}" Background="#FFF0F0F0">
+                    <GroupBox Header="Sortierung:" Margin="5,5,5,5" FontSize="13" FontWeight="Bold" BorderBrush="DarkGray">
                     <StackPanel>
                         <ComboBox Margin="5" FontSize="12" FontWeight="Normal" ItemsSource="{Binding Source={extensions:EnumBindingSource {x:Type enums:SortOrder}}}" SelectedItem="{Binding SortOrder}"/>
-                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Name" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=name, Converter={StaticResource SortOptionToBoolConverter}}"/>
-                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Jahr" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=year, Converter={StaticResource SortOptionToBoolConverter}}"/>
-                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Hinzugefügt" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=newest, Converter={StaticResource SortOptionToBoolConverter}}"/>
-                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="Wertung" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=rating, Converter={StaticResource SortOptionToBoolConverter}}"/>
-                        <RadioButton Margin="2" FontSize="13" FontWeight="Medium" Content="FSK" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=fsk, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="12" FontWeight="Medium" Content="Name" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=name, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="12" FontWeight="Medium" Content="Jahr" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=year, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="12" FontWeight="Medium" Content="Hinzugefügt" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=newest, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="12" FontWeight="Medium" Content="Wertung" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=rating, Converter={StaticResource SortOptionToBoolConverter}}"/>
+                        <RadioButton Margin="2" FontSize="12" FontWeight="Medium" Content="FSK" GroupName="SortGroup" IsChecked="{Binding SortOption, ConverterParameter=fsk, Converter={StaticResource SortOptionToBoolConverter}}"/>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Filter:" Margin="5,5,5,5" FontSize="15" FontWeight="Bold" BorderBrush="DarkGray">
+                <GroupBox Header="Filter:" Margin="5,5,5,5" FontSize="13" FontWeight="Bold" BorderBrush="DarkGray">
                     <StackPanel>
-                        <StackPanel>
-                            <Label Content="generell" HorizontalAlignment="Center" FontWeight="Medium" FontSize="13"/>
-                            <TextBox FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding Filter, Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Margin="0,2">
+                            <Label Content="Name" HorizontalAlignment="Center" FontWeight="Medium" FontSize="11" Padding="0"/>
+                            <TextBox FontSize="12" Height="24" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterName, Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
-                        <StackPanel>
-                            <Label Content="FSK" HorizontalAlignment="Center" FontWeight="Medium" FontSize="13"/>
+                        <StackPanel Margin="0,2">
+                            <Label Content="Genre" HorizontalAlignment="Center" FontWeight="Medium" FontSize="11" Padding="0"/>
+                            <TextBox FontSize="12" Height="24" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterGenre, Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,2">
+                            <Label Content="FSK" HorizontalAlignment="Center" FontWeight="Medium" FontSize="11" Padding="0"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <TextBox Grid.Column="0" FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterFskMin, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Grid.Column="0" FontSize="12" Height="24" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterFskMin, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <Label Grid.Column="1" Content="-" Padding="0" VerticalAlignment="Center"/>
-                                <TextBox Grid.Column="2" FontSize="15" Height="30" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterFskMax, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Grid.Column="2" FontSize="12" Height="24" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterFskMax, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Margin="0,2">
+                            <Label Content="Wertung" HorizontalAlignment="Center" FontWeight="Medium" FontSize="11" Padding="0"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" FontSize="12" Height="24" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterRatingMin, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Label Grid.Column="1" Content="-" Padding="0" VerticalAlignment="Center"/>
+                                <TextBox Grid.Column="2" FontSize="12" Height="24" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterRatingMax, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Margin="0,2">
+                            <Label Content="Jahr" HorizontalAlignment="Center" FontWeight="Medium" FontSize="11" Padding="0"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" FontSize="12" Height="24" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterYearMin, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Label Grid.Column="1" Content="-" Padding="0" VerticalAlignment="Center"/>
+                                <TextBox Grid.Column="2" FontSize="12" Height="24" VerticalContentAlignment="Center" Margin="5,0,5,0" Text="{Binding FilterYearMax, TargetNullValue='' ,Delay=250, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </Grid>
                         </StackPanel>
 
@@ -116,7 +146,7 @@
                 </GroupBox>
             </StackPanel>
 
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
+            <!--<GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" Background="White"/>-->
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

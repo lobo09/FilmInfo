@@ -68,12 +68,12 @@ namespace FilmInfo.Model
 
         public async Task<TMDbLib.Objects.Movies.Movie> GetMovieDetailsAsync(int tmdbID)
         {
-            return await tmdbClient.GetMovieAsync(tmdbID, "de", MovieMethods.ReleaseDates);
+            return await tmdbClient.GetMovieAsync(tmdbID, "de", MovieMethods.ReleaseDates | MovieMethods.Credits);
         }
 
-        public BitmapImage GetPosterFromTMDb(string posterPath, string resolution)
+        public BitmapImage GetImageFromTMDb(string imagePath, string resolution)
         {
-            var uri = new Uri("https://image.tmdb.org/t/p/" + resolution + posterPath);
+            var uri = new Uri("https://image.tmdb.org/t/p/" + resolution + imagePath);
             return new BitmapImage(uri);
         }
 

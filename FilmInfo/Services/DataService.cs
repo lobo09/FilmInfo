@@ -35,9 +35,11 @@ namespace FilmInfo.Services
             return await filmRepository.ScanAllMovies(directory, progress);
         }
 
-        public ObservableCollection<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filter, int? fskMin, int? fskMax)
+        public ObservableCollection<Movie> GetProcessedMovies(string sortType, SortOrder sortOrder, string filterName,string filterGenre, int? filterFskMin, int? filterFskMax, 
+                                                                int? filterRatingMin, int? filterRatingMax, int? filterYearMin, int? filterYearMax)
         {
-            return filmRepository.GetProcessedMovies(sortType, sortOrder, filter, fskMin, fskMax).ToObservableCollection();
+            return filmRepository.GetProcessedMovies(sortType, sortOrder, filterName, filterGenre, filterFskMin, filterFskMax, 
+                                                        filterRatingMin, filterRatingMax,filterYearMin, filterYearMax).ToObservableCollection();
         }
 
         public async Task GetDetailsFromTMDbAsync(Movie movie)

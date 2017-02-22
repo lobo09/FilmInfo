@@ -34,9 +34,14 @@ namespace FilmInfo.ViewModels
         private bool enableSidePanel;
         private string sortOption;
         private SortOrder sortOrder;
-        private string filter;
+        private string filterName;
+        private string filterGenre;
         private int? filterFskMin;
         private int? filterFskMax;
+        private int? filterRatingMin;
+        private int? filterRatingMax;
+        private int? filterYearMin;
+        private int? filterYearMax;
         #endregion
 
         public MainViewModel()
@@ -87,11 +92,10 @@ namespace FilmInfo.ViewModels
             }
             set
             {
-                if (value != null && value != selectedMovie)
+                if (value != selectedMovie)
                 {
                     selectedMovie = value;
                     RaisePropertyChanged("SelectedMovie");
-                    Debug.WriteLine($"SelectedMovie: {value.Name}");
                 }
             }
         }
@@ -152,13 +156,25 @@ namespace FilmInfo.ViewModels
             }
         }
 
-        public string Filter
+        public string FilterName
         {
-            get { return filter; }
+            get { return filterName; }
             set
             {
-                filter = value;
-                RaisePropertyChanged("Filter");
+                filterName = value;
+                RaisePropertyChanged("FilterName");
+                SyncMovieList();
+            }
+        }
+
+
+        public string FilterGenre
+        {
+            get { return filterGenre; }
+            set
+            {
+                filterGenre = value;
+                RaisePropertyChanged("FilterGenre");
                 SyncMovieList();
             }
         }
@@ -182,6 +198,50 @@ namespace FilmInfo.ViewModels
             {
                 filterFskMax = value;
                 RaisePropertyChanged("FilterFskMax");
+                SyncMovieList();
+            }
+        }
+
+        public int? FilterRatingMin
+        {
+            get { return filterRatingMin; }
+            set
+            {
+                filterRatingMin = value;
+                RaisePropertyChanged("FilterRatingMin");
+                SyncMovieList();
+            }
+        }
+
+        public int? FilterRatingMax
+        {
+            get { return filterRatingMax; }
+            set
+            {
+                filterRatingMax = value;
+                RaisePropertyChanged("FilterRatingMax");
+                SyncMovieList();
+            }
+        }
+
+        public int? FilterYearMin
+        {
+            get { return filterYearMin; }
+            set
+            {
+                filterYearMin = value;
+                RaisePropertyChanged("FilterYearMin");
+                SyncMovieList();
+            }
+        }
+
+        public int? FilterYearMax
+        {
+            get { return filterYearMax; }
+            set
+            {
+                filterYearMax = value;
+                RaisePropertyChanged("FilterYearMax");
                 SyncMovieList();
             }
         }
@@ -256,7 +316,6 @@ namespace FilmInfo.ViewModels
         private void OpenDetailView(object obj)
         {
             Messenger.Default.Send<Movie>(obj as Movie);
-            Debug.WriteLine($"OpenDetailsView: {SelectedMovie.Name}");
             dialogService.OpenDetailView();
         }
 
@@ -275,7 +334,7 @@ namespace FilmInfo.ViewModels
 
         private void SyncMovieList()
         {
-            Movies = dataService.GetProcessedMovies(SortOption, SortOrder, Filter, FilterFskMin, FilterFskMax);
+            Movies = dataService.GetProcessedMovies(SortOption, SortOrder, FilterName, FilterGenre, FilterFskMin, FilterFskMax, FilterRatingMin, FilterRatingMax, FilterYearMin, FilterYearMax);
         }
 
         private void RaisePropertyChanged(string propertyName)
