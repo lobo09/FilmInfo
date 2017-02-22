@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FilmInfo.Views"
         x:Class="FilmInfo.Views.DetailView"
         mc:Ignorable="d"
-        Title="DetailView" Height="700" Width="1000"
+        Title="DetailView" Height="770" Width="1000"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
 
@@ -69,7 +69,7 @@
                             <TextBlock Text="Genre:" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBlock Text="{Binding SelectedMovie.Genres, Converter={StaticResource ListToStringConverter}}" VerticalAlignment="Bottom" FontWeight="Normal"/>
                         </StackPanel>
-                        
+
                         <Grid Name="UserRating" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -108,7 +108,106 @@
             </Grid>
         </Grid>
         <GroupBox Grid.Row="2" Header="Darsteller:" Margin="10" FontWeight="Bold">
-
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <Grid>
+                        <Ellipse Width="120" Height="120" Stroke="#FF444444" StrokeThickness="1">
+                            <Ellipse.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".6"/>
+                            </Ellipse.Effect>
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding SelectedMovie.CastList[0].Image}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                    <Label Content="{Binding SelectedMovie.CastList[0].Name}" HorizontalAlignment="Center" Padding="0" FontSize="12" FontWeight="Bold"/>
+                    <Label Content="als" HorizontalAlignment="Center" Padding="0" FontSize="8" FontWeight="Normal"/>
+                    <Label Content="{Binding SelectedMovie.CastList[0].Character}" HorizontalAlignment="Center" Padding="0" FontSize="11" FontWeight="Medium"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <Grid>
+                        <Ellipse Width="120" Height="120" Stroke="#FF444444" StrokeThickness="1">
+                            <Ellipse.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".6"/>
+                            </Ellipse.Effect>
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding SelectedMovie.CastList[1].Image}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                    <Label Content="{Binding SelectedMovie.CastList[1].Name}" HorizontalAlignment="Center" Padding="0" FontSize="12" FontWeight="Bold"/>
+                    <Label Content="als" HorizontalAlignment="Center" Padding="0" FontSize="8" FontWeight="Normal"/>
+                    <Label Content="{Binding SelectedMovie.CastList[1].Character}" HorizontalAlignment="Center" Padding="0" FontSize="11" FontWeight="Medium"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <Grid>
+                        <Ellipse Width="120" Height="120" Stroke="#FF444444" StrokeThickness="1">
+                            <Ellipse.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".6"/>
+                            </Ellipse.Effect>
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding SelectedMovie.CastList[2].Image}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                    <Label Content="{Binding SelectedMovie.CastList[2].Name}" HorizontalAlignment="Center" Padding="0" FontSize="12" FontWeight="Bold"/>
+                    <Label Content="als" HorizontalAlignment="Center" Padding="0" FontSize="8" FontWeight="Normal"/>
+                    <Label Content="{Binding SelectedMovie.CastList[2].Character}" HorizontalAlignment="Center" Padding="0" FontSize="11" FontWeight="Medium"/>
+                </StackPanel>
+                <StackPanel Grid.Column="3">
+                    <Grid>
+                        <Ellipse Width="120" Height="120" Stroke="#FF444444" StrokeThickness="1">
+                            <Ellipse.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".6"/>
+                            </Ellipse.Effect>
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding SelectedMovie.CastList[3].Image}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                    <Label Content="{Binding SelectedMovie.CastList[3].Name}" HorizontalAlignment="Center" Padding="0" FontSize="12" FontWeight="Bold"/>
+                    <Label Content="als" HorizontalAlignment="Center" Padding="0" FontSize="8" FontWeight="Normal"/>
+                    <Label Content="{Binding SelectedMovie.CastList[3].Character}" HorizontalAlignment="Center" Padding="0" FontSize="11" FontWeight="Medium"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                    <Grid>
+                        <Ellipse Width="120" Height="120" Stroke="#FF444444" StrokeThickness="1">
+                            <Ellipse.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".6"/>
+                            </Ellipse.Effect>
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding SelectedMovie.CastList[4].Image}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                    <Label Content="{Binding SelectedMovie.CastList[4].Name}" HorizontalAlignment="Center" Padding="0" FontSize="12" FontWeight="Bold"/>
+                    <Label Content="als" HorizontalAlignment="Center" Padding="0" FontSize="8" FontWeight="Normal"/>
+                    <Label Content="{Binding SelectedMovie.CastList[4].Character}" HorizontalAlignment="Center" Padding="0" FontSize="11" FontWeight="Medium"/>
+                </StackPanel>
+                <StackPanel Grid.Column="5">
+                    <Grid>
+                        <Ellipse Width="120" Height="120" Stroke="#FF444444" StrokeThickness="1">
+                            <Ellipse.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".6"/>
+                            </Ellipse.Effect>
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding SelectedMovie.CastList[5].Image}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                    <Label Content="{Binding SelectedMovie.CastList[5].Name}" HorizontalAlignment="Center" Padding="0" FontSize="12" FontWeight="Bold"/>
+                    <Label Content="als" HorizontalAlignment="Center" Padding="0" FontSize="8" FontWeight="Normal"/>
+                    <Label Content="{Binding SelectedMovie.CastList[5].Character}" HorizontalAlignment="Center" Padding="0" FontSize="11" FontWeight="Medium"/>
+                </StackPanel>
+            </Grid>
         </GroupBox>
     </Grid>
 </Window>
